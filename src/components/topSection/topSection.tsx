@@ -27,6 +27,7 @@ class TopSection extends Component<InputProps, InputState> {
     const { inputValue } = this.state;
     const { onSearch } = this.props;
     onSearch(inputValue);
+    this.setState({ inputValue: '' });
   };
 
   render() {
