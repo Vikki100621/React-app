@@ -46,7 +46,11 @@ class ErrorBoundary extends Component<Props, State> {
     return (
       <div className="error-wrapper">
         {children}
-        <Button classes="top__section-button error" title="Error" onClick={this.handleButtonClick} />
+        <Button
+          classes="top__section-button error"
+          title="Error"
+          onClick={this.handleButtonClick}
+        />
       </div>
     );
   }

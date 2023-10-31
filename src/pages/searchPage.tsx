@@ -69,7 +69,11 @@ class SearchPage extends Component<SearchPageProps, BottomSectionState> {
       <>
         <div className="top__section">
           <h1>Search your GIF</h1>
-          <Input type="text" value={inputValue} onChange={this.handleInputChange} />
+          <Input
+            type="text"
+            value={inputValue}
+            onChange={this.handleInputChange}
+          />
           <Button
             classes="top__section-button"
             title="search"

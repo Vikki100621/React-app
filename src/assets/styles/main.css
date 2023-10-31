@@ -15,7 +15,7 @@ body {
   height: max-content;
   gap: 50px;
   padding-top: 50px;
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   color: white;
 }
 
@@ -23,4 +23,4 @@ body {
   position: fixed;
   align-self: self-end;
   margin-top: 755px;
-}/*# sourceMappingURL=main.css.map */
+} /*# sourceMappingURL=main.css.map */
