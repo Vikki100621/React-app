@@ -13,11 +13,12 @@ module.exports = {
   ignorePatterns: ['dist', '.eslintrc.cjs', 'vite.config.ts'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './tsconfig.eslint.json',
+    project: 'tsconfig.json',
+    tsconfigRootDir: __dirname,
+    sourceType: 'module',
   },
   plugins: ['react-refresh', 'prettier'],
   rules: {
-    'no-console': 'off',
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
