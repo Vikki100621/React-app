@@ -97,6 +97,8 @@ $font-garamond: 'Cormorant Garamond', serif;
   flex-direction: column;
   justify-content: center;
   row-gap: 30px;
+  row-gap: 30px;
+  align-items: center;
   ul {
     display: flex;
     flex-direction: column;
@@ -128,7 +130,7 @@ $font-garamond: 'Cormorant Garamond', serif;
   border-top: 4px solid #3498db;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin: 0 auto;
+  margin: 300px auto;
 }
 
 @keyframes spin {
@@ -147,7 +149,7 @@ $font-garamond: 'Cormorant Garamond', serif;
 
 .not-results {
   display: flex;
-  margin: 0 auto;
+  margin: 300px auto;
   width: 570px;
   height: 200px;
   background-color: rgb(133 168 195 / 34%);

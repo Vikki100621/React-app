@@ -11,6 +11,10 @@ export type AppState = {
   slug: string;
 };
 
+export type ResultsListProps = {
+  results: AppState[];
+};
+
 export type BottomSectionState = {
   inputValue: string;
   results: AppState[];
@@ -36,4 +40,8 @@ export type LoaderProps = {
   queryParam: string;
 };
 
-export interface SearchPageProps {}
+export type SearchBarProps = {
+  inputValue: string;
+  handleSearch: () => void;
+  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
