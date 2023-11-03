@@ -19,4 +19,9 @@ body {
 .error {
   align-self: flex-start;
   position: absolute;
+}
+
+.buttons-block {
+  margin: 0 auto;
+  width: 100px;
 }/*# sourceMappingURL=main.css.map */

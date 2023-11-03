@@ -1,19 +1,25 @@
 import Axios from 'axios';
 
-class ApiService {
-  static async search(query?: string) {
-    try {
-      const API_KEY = '3AdH6Vmo09VTmVBWLrdhWa2REmCJlzHW';
-      const response = await Axios.get(`https://api.giphy.com/v1/gifs/search`, {
+export const getDataFromApi = async (
+  query: string,
+  limit: number,
+  page: number
+) => {
+  try {
+    const API_KEY = 'e4c03a7b1cab40598e87de5d64d5eff0';
+    const response = await Axios.get(
+      `https://api.spoonacular.com/recipes/complexSearch`,
+      {
         params: {
-          api_key: API_KEY,
-          q: query,
+          apiKey: API_KEY,
+          query,
+          number: limit,
+          offset: page,
         },
-      });
-      return response.data;
-    } catch (e) {
-      return undefined;
-    }
+      }
+    );
+    return response.data;
+  } catch (e) {
+    return undefined;
   }
-}
-export default ApiService;
+};

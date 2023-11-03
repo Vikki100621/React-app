@@ -7,7 +7,7 @@ function ResultsList(props: ResultsListProps) {
       {results.map((item: AppState) => (
         <li key={item.id}>
           <h3>{item.title}</h3>
-          <img src={item.images.original.url} alt={item.title} />
+          <img src={item.image} alt={item.title} />
         </li>
       ))}
     </ul>

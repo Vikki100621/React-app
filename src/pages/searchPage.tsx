@@ -1,12 +1,14 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-
-import ApiService from '../API/api';
 import { AppState } from '../interface/interface';
 import Loader from '../components/UI/loader';
 import SearchBar from '../components/searchBar';
 import Catalog from '../components/catalog';
 import ErrorBoundary from '../components/errorBoundary';
 import Button from '../components/UI/button';
+import { getDataFromApi } from '../API/api';
+import SelectComponent from '../components/UI/select';
+import { getPagesCount } from '../components/utils/pageCount';
+import { Pagination } from '../components/pagination';
 
 interface SearchState {
   isError: boolean;
@@ -15,6 +17,9 @@ interface SearchState {
   isLoading: boolean;
   queryParam: string;
   isResult: boolean;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 const initialSearchState: SearchState = {
@@ -24,6 +29,9 @@ const initialSearchState: SearchState = {
   isLoading: false,
   queryParam: '',
   isResult: true,
+  page: 1,
+  limit: 4,
+  totalPages: 0,
 };
 
 function SearchPage() {
@@ -37,17 +45,28 @@ function SearchPage() {
       queryParam: data,
     }));
     setTimeout(async () => {
-      const response = await ApiService.search(data);
-      const responseData = response.data;
-      if (responseData.length === 0) {
+      const { limit, page } = searchState;
+      console.log(page);
+      const response = await getDataFromApi(data, limit, page);
+      const totalItems = response.totalResults;
+      const pages = getPagesCount(totalItems, searchState.limit);
+      console.log(pages);
+      setSearchState((prevSearchState) => ({
+        ...prevSearchState,
+        totalPages: pages,
+      }));
+      console.log(response);
+      const responseData = response?.results;
+      console.log(responseData);
+      if (responseData) {
         setSearchState((prevSearchState) => ({
           ...prevSearchState,
-          isResult: false,
+          isResult: true,
         }));
       } else {
         setSearchState((prevSearchState) => ({
           ...prevSearchState,
-          isResult: true,
+          isResult: false,
         }));
       }
       setSearchState((prevSearchState) => ({
@@ -62,9 +81,9 @@ function SearchPage() {
   useEffect(() => {
     const searchQuery = localStorage.getItem('searchQuery');
     if (!searchQuery) {
-      localStorage.setItem('searchQuery', 'all');
+      localStorage.setItem('searchQuery', 'salt');
     }
-    fetchData(searchQuery || 'all');
+    fetchData(searchQuery || 'salt');
   }, []);
 
   const handleSearch = () => {
@@ -72,10 +91,10 @@ function SearchPage() {
     if (searchState.inputValue === searchState.queryParam) {
       return;
     }
-    if (searchState.inputValue === '') {
-      localStorage.setItem('searchQuery', 'all');
+    if (searchState.inputValue === 'salt') {
+      localStorage.setItem('searchQuery', 'salt');
     }
-    fetchData(searchState.inputValue || 'all');
+    fetchData(searchState.inputValue || 'salt');
   };
 
   const handleInputChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
@@ -87,18 +106,46 @@ function SearchPage() {
   };
 
   const addRenderError = () => {
-    console.log('работаю');
     setSearchState((prevSearchState) => ({
       ...prevSearchState,
       isError: true,
     }));
-    throw new Error('Simulated render error to check ErrorBoundary');
   };
 
   const resetRenderError = () => {
     setSearchState((prevSearchState) => ({
       ...prevSearchState,
       isError: false,
+    }));
+  };
+
+  const handleLimitChange = (newLimit: string) => {
+    console.log(newLimit);
+    const limitNum = parseInt(newLimit, 10);
+    setSearchState((prevSearchState) => ({
+      ...prevSearchState,
+      limit: limitNum,
+    }));
+  };
+
+  useEffect(() => {
+    setSearchState((prevSearchState) => ({
+      ...prevSearchState,
+      page: 1,
+    }));
+    fetchData(searchState.queryParam);
+  }, [searchState.limit, searchState.queryParam]);
+
+  useEffect(() => {
+    fetchData(searchState.queryParam);
+  }, [searchState.page]);
+
+  const changePage = (page: number) => {
+    const pageNum = page * searchState.limit;
+    console.log(pageNum);
+    setSearchState((prevSearchState) => ({
+      ...prevSearchState,
+      page: pageNum,
     }));
   };
 
@@ -124,6 +171,13 @@ function SearchPage() {
         title="Error"
         onClick={addRenderError}
       />
+
+      <Pagination
+        totalPages={searchState.totalPages}
+        changePage={changePage}
+        page={searchState.page}
+      />
+      <SelectComponent onChange={handleLimitChange} />
     </ErrorBoundary>
   );
 }

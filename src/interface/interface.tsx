@@ -3,12 +3,7 @@ import { ChangeEvent } from 'react';
 export type AppState = {
   title: string;
   id: string;
-  images: {
-    original: {
-      url: string;
-    };
-  };
-  slug: string;
+  image: string;
 };
 
 export type ResultsListProps = {
@@ -34,6 +29,9 @@ export type ButtonProps = {
   title: string;
   classes: string;
   onClick: () => void;
+  style?: {
+    background: string;
+  };
 };
 
 export type LoaderProps = {
@@ -44,4 +42,10 @@ export type SearchBarProps = {
   inputValue: string;
   handleSearch: () => void;
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+export type PaginationProps = {
+  totalPages: number;
+  page: number;
+  changePage: (page: number) => void;
 };
