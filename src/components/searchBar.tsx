@@ -9,7 +9,7 @@ function SearchBar({
 }: SearchBarProps) {
   return (
     <div className="top__section">
-      <h1>Search your GIF</h1>
+      <h1>Search your your recipe</h1>
       <Input type="text" value={inputValue} onChange={handleInputChange} />
       <Button
         classes="top__section-button"

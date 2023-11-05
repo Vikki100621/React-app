@@ -1,0 +1,51 @@
+.ddetailed-page {
+  display: flex;
+  flex-direction: column;
+  row-gap: 30px;
+  span {
+    align-self: flex-end;
+    cursor: pointer;
+    transition: 1s;
+  }
+}
+.detailed_page span:hover {
+  transform: scale(2);
+}
+
+.information {
+  width: 500px;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  height: max-content;
+  width: 100%;
+  gap: 50px;
+  padding-top: 50px;
+  color: #ffffff;
+  margin: 0;
+  justify-content: space-around;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  row-gap: 30px;
+  align-items: center;
+}
+
+.wrapper .menu .top__section {
+  background-color: inherit;
+}
+
+.menu .top__section-button {
+  display: none;
+}
+.wrapper .menu .bottom__section ul li img {
+  width: 200px;
+}
+
+.wrapper .menu .bottom__section ul {
+  width: 514px;
+}

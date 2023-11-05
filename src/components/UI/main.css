@@ -3,6 +3,7 @@
 body {
   background: linear-gradient(to top, #55efcb 0%, #5bcaff 100%);
 }
+
 #root {
   margin: 0 auto;
   display: flex;
@@ -11,7 +12,7 @@ body {
   height: max-content;
   gap: 50px;
   padding-top: 50px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   color: white;
 }
 
@@ -22,5 +23,9 @@ body {
 
 .buttons-block {
   margin: 0 auto;
-  width: 100px;
+  display: flex;
 }
+
+.pag.active {
+  background: #55efcb;
+}/*# sourceMappingURL=main.css.map */

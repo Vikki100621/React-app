@@ -17,7 +17,7 @@ $font-garamond: 'Cormorant Garamond', serif;
     height: 40px;
   }
   h1 {
-    font-family: 'Our Grown', sans-serif;
+    // font-family: 'Our Grown', sans-serif;
     letter-spacing: 2px;
   }
 }
@@ -164,5 +164,32 @@ $font-garamond: 'Cormorant Garamond', serif;
     text-align: center;
     font-size: 34px;
     font-family: Montserrat, sans-serif;
+  }
+}
+
+.pagination__button {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  padding: 16px;
+  cursor: pointer;
+  .first {
+    display: flex;
+  }
+  .previous {
+  }
+  .next {
+  }
+  .last {
+  }
+}
+.pagination__button.first,
+.pagination__button.last {
+  img {
+    margin: 0;
   }
 }

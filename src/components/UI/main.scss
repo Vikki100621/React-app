@@ -1,10 +1,8 @@
 @import './reset.css';
 @import './searchPage/searchPage.css';
-@import './detailedPage/detailedPage.css';
 body {
   background: linear-gradient(to top, #55efcb 0%, #5bcaff 100%);
 }
-
 #root {
   margin: 0 auto;
   display: flex;
@@ -13,8 +11,8 @@ body {
   height: max-content;
   gap: 50px;
   padding-top: 50px;
-  font-family: Montserrat, sans-serif;
-  color: #ffffff;
+  font-family: 'Montserrat', sans-serif;
+  color: white;
 }
 
 .error {
@@ -25,10 +23,8 @@ body {
 .buttons-block {
   margin: 0 auto;
   display: flex;
-  column-gap: 10px;
-  justify-content: center;
-}
-.pagination__button.active {
-  background: #efbc55;
 }
 
+.pag.active {
+  background: #55efcb;
+}

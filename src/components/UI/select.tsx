@@ -13,7 +13,7 @@ function SelectComponent({ onChange }: SelectComponentProps) {
 
   return (
     <div>
-      <label htmlFor="select">Выберите значение:</label>
+      <label htmlFor="select">Select the quantity</label>
       <select id="select" onChange={handleChange}>
         <option value="4">4</option>
         <option value="6">6</option>

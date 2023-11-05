@@ -26,12 +26,14 @@ export type InputProps = {
 };
 
 export type ButtonProps = {
-  title: string;
+  title: string | undefined;
   classes: string;
-  onClick: () => void;
+  onClick?: () => void;
   style?: {
     background: string;
   };
+  disabled?: boolean;
+  children?: React.ReactNode;
 };
 
 export type LoaderProps = {
@@ -48,4 +50,12 @@ export type PaginationProps = {
   totalPages: number;
   page: number;
   changePage: (page: number) => void;
+};
+
+export type DetailedPage = {
+  id: number;
+  title: string;
+  image?: string;
+  readyInMinutes?: number;
+  instructions?: string;
 };

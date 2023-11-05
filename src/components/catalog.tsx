@@ -19,7 +19,7 @@ function Catalog({ isResult, queryParam, results, isError }: CatalogProps) {
   ) : results.length ? (
     <div className="bottom__section">
       <h3>
-        <span className="query-param">{queryParam}</span> GIFS
+        Recipes with <span className="query-param">{queryParam}</span>
       </h3>
       <ResultsList results={results} />
     </div>
