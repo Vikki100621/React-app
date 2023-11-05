@@ -1,5 +1,4 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-// import { useParams } from 'react-router-dom';
 import { AppState } from '../interface/interface';
 import Loader from '../components/UI/loader';
 import SearchBar from '../components/searchBar';
@@ -36,7 +35,6 @@ const initialSearchState: SearchState = {
 };
 
 function SearchPage() {
-  // const params = useParams();
   const [searchState, setSearchState] =
     useState<SearchState>(initialSearchState);
 
@@ -150,21 +148,6 @@ function SearchPage() {
       page: pageNum,
     }));
   };
-
-  // useEffect(() => {
-  //   let urlPage: number;
-  //   if (params.page) {
-  //     const arrPage = params.page.split('');
-  //     urlPage = Number(arrPage[5]);
-  //   } else {
-  //     urlPage = 1;
-  //   }
-  //   setSearchState((prevSearchState) => ({
-  //     ...prevSearchState,
-  //     page: (urlPage - 1) * prevSearchState.limit,
-  //   }));
-  // }, [params.page]);
-
   return (
     <ErrorBoundary catchError={resetRenderError}>
       <SearchBar

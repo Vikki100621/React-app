@@ -1,5 +1,4 @@
 import {
-  Outlet,
   Route,
   RouterProvider,
   createBrowserRouter,
@@ -20,7 +19,7 @@ function App() {
           element={
             <div className="wrapper">
               <div className="menu">
-                <Outlet />
+                <SearchPage />
               </div>
               <div className="information">
                 <PageId />

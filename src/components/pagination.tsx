@@ -15,7 +15,6 @@ type ButtonsState = {
 
 export function Pagination({ totalPages, changePage }: PaginationProps) {
   const pagesArray = useTotalPagesArray(totalPages);
-  // const params = useParams();
   const initialButtonsState =
     pagesArray.length === 2
       ? {
@@ -29,20 +28,6 @@ export function Pagination({ totalPages, changePage }: PaginationProps) {
 
   const [ButtonsState, setButtonState] =
     useState<ButtonsState>(initialButtonsState);
-  console.log(ButtonsState);
-  // useEffect(() => {
-  //   let urlPage: number;
-  //   if (params.page) {
-  //     const arrPage = params.page.split('');
-  //     urlPage = Number(arrPage[5]);
-  //   } else {
-  //     urlPage = 1;
-  //   }
-  //   setButtonState({
-  //     currentPage: urlPage,
-  //     visibleButtons: [urlPage - 1, urlPage, urlPage + 1],
-  //   });
-  // }, [params.page]);
 
   useEffect(() => {
     setButtonState(initialButtonsState);

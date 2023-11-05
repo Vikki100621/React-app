@@ -12,7 +12,6 @@ function PageId() {
     try {
       const response = await getReciepFromApi(Number(params.id));
       setRecipe(response);
-      console.log(response);
     } catch (error) {
       console.error(error);
     }
