@@ -8,6 +8,7 @@ export type AppState = {
 
 export type ResultsListProps = {
   results: AppState[];
+  handleItemClick: (id: string) => void;
 };
 
 export type BottomSectionState = {
@@ -53,9 +54,22 @@ export type PaginationProps = {
 };
 
 export type DetailedPage = {
-  id: number;
-  title: string;
+  id?: number;
+  title?: string;
   image?: string;
   readyInMinutes?: number;
   instructions?: string;
+};
+
+export type CatalogProps = {
+  isResult: boolean;
+  isError: boolean;
+  queryParam: string;
+  results: AppState[];
+  handleItemClick: (id: string) => void;
+};
+
+export type PageIdProps = {
+  result: DetailedPage;
+  handleGoBack: () => void;
 };

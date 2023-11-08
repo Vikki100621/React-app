@@ -1,8 +1,16 @@
+import { createBrowserRouter } from 'react-router-dom';
 import SearchPage from '../../pages/searchPage';
-import PageId from '../../pages/detailedPage';
+import { NotFound } from '../../pages/notFoundPage';
 
-export const Routes = [
-  { path: '/recipes/page=1', element: <SearchPage /> },
-  { path: '/recipes/:id', element: <PageId /> },
-  // { path: "*",  element: <NotFound />},
-];
+export const router = createBrowserRouter([
+  {
+    path: '/',
+    errorElement: <NotFound />,
+    children: [
+      {
+        path: '',
+        element: <SearchPage />,
+      },
+    ],
+  },
+]);

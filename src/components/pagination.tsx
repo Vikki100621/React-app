@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import useTotalPagesArray from '../hooks/usePagination';
 import { PaginationProps } from '../interface/interface';
 import Button from './UI/button';
@@ -39,8 +38,7 @@ export function Pagination({ totalPages, changePage }: PaginationProps) {
       if (newPage <= totalPages) {
         const updatedFirstButtons = incrementPage(ButtonsState.visibleButtons);
         changePage(newPage);
-        setButtonState((prevSearchState) => ({
-          ...prevSearchState,
+        setButtonState(() => ({
           currentPage: newPage,
           visibleButtons: updatedFirstButtons,
         }));
@@ -88,61 +86,52 @@ export function Pagination({ totalPages, changePage }: PaginationProps) {
     <div className="buttons-block">
       {pagesArray.length > 1 ? (
         <>
-          <Link to="/page=1">
-            <Button
-              classes="pagination__button first"
-              title=""
-              onClick={handleFirstPage}
-            >
-              <img src={prevPage} alt="First Page" />
-              <img src={prevPage} alt="First Page" />
-            </Button>
-          </Link>
-          <Link to={`/page=${ButtonsState.currentPage - 1}`}>
-            <Button
-              classes="pagination__button previous"
-              title=""
-              onClick={handlePreviousPage}
-            >
-              <img src={prevPage} alt="Previous Page" />
-            </Button>
-          </Link>
+          <Button
+            classes="pagination__button first"
+            title=""
+            onClick={handleFirstPage}
+          >
+            <img src={prevPage} alt="First Page" />
+            <img src={prevPage} alt="First Page" />
+          </Button>
+          <Button
+            classes="pagination__button previous"
+            title=""
+            onClick={handlePreviousPage}
+          >
+            <img src={prevPage} alt="Previous Page" />
+          </Button>
           {ButtonsState.visibleButtons.map((item) => (
-            <Link to={`/page=${item}`} key={item}>
-              <Button
-                classes={`pagination__button ${
-                  item === ButtonsState.currentPage ? 'active' : ''
-                }`}
-                onClick={() => {
-                  changePage(item);
-                  setButtonState((prevSearchState) => ({
-                    ...prevSearchState,
-                    currentPage: item,
-                  }));
-                }}
-                title={item.toString()}
-              />
-            </Link>
+            <Button
+              classes={`pagination__button ${
+                item === ButtonsState.currentPage ? 'active' : ''
+              }`}
+              onClick={() => {
+                changePage(item);
+                setButtonState((prevSearchState) => ({
+                  ...prevSearchState,
+                  currentPage: item,
+                }));
+              }}
+              title={item.toString()}
+            />
           ))}
-          <Link to={`/page=${ButtonsState.currentPage + 1}`}>
-            <Button
-              classes="pagination__button next"
-              title=""
-              onClick={handleNextPage}
-            >
-              <img src={nextPage} alt="Next Page" />
-            </Button>
-          </Link>
-          <Link to={`/page=${totalPages}`}>
-            <Button
-              classes="pagination__button last"
-              title=""
-              onClick={handleLastPage}
-            >
-              <img src={nextPage} alt="Last Page" />
-              <img src={nextPage} alt="Last Page" />
-            </Button>
-          </Link>
+
+          <Button
+            classes="pagination__button next"
+            title=""
+            onClick={handleNextPage}
+          >
+            <img src={nextPage} alt="Next Page" />
+          </Button>
+          <Button
+            classes="pagination__button last"
+            title=""
+            onClick={handleLastPage}
+          >
+            <img src={nextPage} alt="Last Page" />
+            <img src={nextPage} alt="Last Page" />
+          </Button>
         </>
       ) : null}
     </div>

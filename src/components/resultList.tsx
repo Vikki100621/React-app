@@ -1,20 +1,17 @@
-import { Link, useParams } from 'react-router-dom';
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable  jsx-a11y/no-noninteractive-element-interactions */
 import { AppState, ResultsListProps } from '../interface/interface';
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 
 function ResultsList(props: ResultsListProps) {
-  const { page } = useParams();
-  const { results } = props;
+  const { results, handleItemClick } = props;
 
   return (
     <ul>
       {results.map((item: AppState) => (
-        <Link to={`/${page}/${item.id}`}>
-          <li id={item.id} key={item.id}>
-            <h3>{item.title}</h3>
-            <img src={item.image} alt={item.title} />
-          </li>
-        </Link>
+        <li id={item.id} key={item.id} onClick={() => handleItemClick(item.id)}>
+          <h3>{item.title}</h3>
+          <img src={item.image} alt={item.title} />
+        </li>
       ))}
     </ul>
   );

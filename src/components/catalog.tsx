@@ -1,15 +1,14 @@
-import { AppState } from '../interface/interface';
+import { CatalogProps } from '../interface/interface';
 import ErrorBox from './error';
 import ResultsList from './resultList';
 
-type CatalogProps = {
-  isResult: boolean;
-  isError: boolean;
-  queryParam: string;
-  results: AppState[];
-};
-
-function Catalog({ isResult, queryParam, results, isError }: CatalogProps) {
+function Catalog({
+  isResult,
+  queryParam,
+  results,
+  isError,
+  handleItemClick,
+}: CatalogProps) {
   if (isError) {
     throw new Error('Test error to check ErrorBoundary');
   }
@@ -21,7 +20,7 @@ function Catalog({ isResult, queryParam, results, isError }: CatalogProps) {
       <h3>
         Recipes with <span className="query-param">{queryParam}</span>
       </h3>
-      <ResultsList results={results} />
+      <ResultsList handleItemClick={handleItemClick} results={results} />
     </div>
   ) : (
     <ErrorBox errorText="No results" />

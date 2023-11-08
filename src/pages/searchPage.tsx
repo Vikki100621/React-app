@@ -1,14 +1,17 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import { AppState } from '../interface/interface';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { AppState, DetailedPage } from '../interface/interface';
 import Loader from '../components/UI/loader';
 import SearchBar from '../components/searchBar';
 import Catalog from '../components/catalog';
 import ErrorBoundary from '../components/errorBoundary';
 import Button from '../components/UI/button';
-import { getDataFromApi } from '../API/api';
+import { getDataFromApi, getReciepFromApi } from '../API/api';
 import SelectComponent from '../components/UI/select';
 import { getPagesCount } from '../components/utils/pageCount';
 import { Pagination } from '../components/pagination';
+import PageId from './detailedPage';
+import { NotFound } from './notFoundPage';
 
 interface SearchState {
   isError: boolean;
@@ -20,6 +23,10 @@ interface SearchState {
   page: number;
   limit: number;
   totalPages: number;
+  isItem: boolean;
+  isLoadingItem: boolean;
+  isItemResult: boolean;
+  ItemResult: DetailedPage;
 }
 
 const initialSearchState: SearchState = {
@@ -29,14 +36,32 @@ const initialSearchState: SearchState = {
   isLoading: false,
   queryParam: localStorage.getItem('searchQuery')!,
   isResult: true,
-  page: 1,
+  page: 0,
   limit: 4,
   totalPages: 0,
+  isItem: false,
+  isLoadingItem: false,
+  isItemResult: false,
+  ItemResult: {},
 };
 
 function SearchPage() {
   const [searchState, setSearchState] =
     useState<SearchState>(initialSearchState);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+
+  const handleQueryChange = (param: string, value: number) => {
+    queryParams.set(`${param}`, value.toString());
+    navigate({ search: queryParams.toString() });
+  };
+
+  useEffect(() => {
+    if (!queryParams.get('page') || searchState.page === 0) {
+      handleQueryChange('page', 1);
+    }
+  }, []);
 
   const fetchData = async (data: string) => {
     setSearchState((prevSearchState) => ({
@@ -45,9 +70,13 @@ function SearchPage() {
       queryParam: data,
     }));
     setTimeout(async () => {
-      const { limit, page } = searchState;
-      const response = await getDataFromApi(data, limit, page);
+      const response = await getDataFromApi(
+        data,
+        searchState.limit,
+        searchState.page
+      );
       const responseData = response?.results;
+      console.log(responseData);
       if (responseData) {
         const totalItems = response.totalResults;
         const pages = getPagesCount(totalItems, searchState.limit);
@@ -68,18 +97,16 @@ function SearchPage() {
         isLoading: false,
         inputValue: '',
       }));
-    }, 1000);
+    }, 0);
   };
 
   useEffect(() => {
     const searchQuery = localStorage.getItem('searchQuery');
-    if (!searchQuery) {
-      localStorage.setItem('searchQuery', 'salt');
-    }
     fetchData(searchQuery || 'salt');
-  }, []);
+  }, [searchState.limit, searchState.queryParam, searchState.page]);
 
   const handleSearch = () => {
+    handleQueryChange('page', 1);
     localStorage.setItem('searchQuery', searchState.inputValue);
     if (searchState.inputValue === searchState.queryParam) {
       return;
@@ -114,6 +141,7 @@ function SearchPage() {
   };
 
   const handleLimitChange = (newLimit: string) => {
+    handleQueryChange('page', 1);
     const limitNum = parseInt(newLimit, 10);
     setSearchState((prevSearchState) => ({
       ...prevSearchState,
@@ -122,32 +150,53 @@ function SearchPage() {
     }));
   };
 
-  useEffect(() => {
-    fetchData(searchState.queryParam);
-  }, [searchState.totalPages, searchState.page]);
-
-  useEffect(() => {
-    setSearchState((prevSearchState) => ({
-      ...prevSearchState,
-      totalPages: 0,
-    }));
-    fetchData(searchState.queryParam);
-  }, [searchState.limit, searchState.queryParam]);
-
-  const changePage = (page: number) => {
-    let pageNum: number;
-    if (page === 1) {
-      pageNum = 0;
-    } else if (page === 2) {
-      pageNum = searchState.limit;
-    } else {
-      pageNum = (page - 1) * searchState.limit;
+  const changePage = (updetedPage: number) => {
+    handleQueryChange('page', updetedPage);
+    let newPage = 0;
+    switch (updetedPage) {
+      case 1:
+        newPage = 0;
+        break;
+      case 2:
+        newPage = searchState.limit;
+        break;
+      default:
+        newPage = (updetedPage - 1) * searchState.limit;
+        break;
     }
     setSearchState((prevSearchState) => ({
       ...prevSearchState,
-      page: pageNum,
+      page: newPage,
     }));
   };
+
+  const handleItemClick = async (id: string) => {
+    handleQueryChange('recipe', Number(id));
+    setSearchState((prevSearchState) => ({
+      ...prevSearchState,
+      isLoadingItem: true,
+      queryParam: id,
+    }));
+    setTimeout(async () => {
+      const response = await getReciepFromApi(Number(id));
+      if (response) {
+        setSearchState((prevSearchState) => ({
+          ...prevSearchState,
+          isItemResult: response,
+          isItem: true,
+          isLoading: false,
+        }));
+      }
+    });
+  };
+  const handleGoBack = () => {
+    queryParams.delete('recipe');
+    setSearchState((prevSearchState) => ({
+      ...prevSearchState,
+      isItem: false,
+    }));
+  };
+
   return (
     <ErrorBoundary catchError={resetRenderError}>
       <SearchBar
@@ -159,6 +208,7 @@ function SearchPage() {
         <Loader queryParam={searchState.queryParam} />
       ) : (
         <Catalog
+          handleItemClick={handleItemClick}
           results={searchState.results}
           isResult={searchState.isResult}
           queryParam={searchState.queryParam}
@@ -176,6 +226,15 @@ function SearchPage() {
         page={searchState.page}
       />
       <SelectComponent onChange={handleLimitChange} />
+      {searchState.isLoadingItem ? (
+        searchState.isItem ? (
+          <Loader queryParam="kh" />
+        ) : searchState.ItemResult ? (
+          <PageId handleGoBack={handleGoBack} result={searchState.ItemResult} />
+        ) : (
+          <NotFound />
+        )
+      ) : null}
     </ErrorBoundary>
   );
 }
