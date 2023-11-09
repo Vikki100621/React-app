@@ -9,6 +9,7 @@
   top: 0;
   margin: 0 auto;
   text-align: center;
+  z-index: 100;
 }
 .top__section input {
   width: 400px;
@@ -86,6 +87,7 @@
   row-gap: 30px;
   row-gap: 30px;
   align-items: center;
+  transition: margin-left 0.5s;
 }
 .bottom__section ul {
   display: flex;
@@ -169,4 +171,8 @@
 .pagination__button.first img,
 .pagination__button.last img {
   margin: 0;
+}
+
+.pagination__button.active {
+  background-color: #d42892;
 }/*# sourceMappingURL=searchPage.css.map */

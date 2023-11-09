@@ -1,6 +1,5 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AppState, DetailedPage } from '../interface/interface';
 import Loader from '../components/UI/loader';
 import SearchBar from '../components/searchBar';
 import Catalog from '../components/catalog';
@@ -12,42 +11,18 @@ import { getPagesCount } from '../components/utils/pageCount';
 import { Pagination } from '../components/pagination';
 import PageId from './detailedPage';
 import { NotFound } from './notFoundPage';
-
-interface SearchState {
-  isError: boolean;
-  inputValue: string;
-  results: AppState[];
-  isLoading: boolean;
-  queryParam: string;
-  isResult: boolean;
-  page: number;
-  limit: number;
-  totalPages: number;
-  isItem: boolean;
-  isLoadingItem: boolean;
-  isItemResult: boolean;
-  ItemResult: DetailedPage;
-}
-
-const initialSearchState: SearchState = {
-  isError: false,
-  inputValue: '',
-  results: [],
-  isLoading: false,
-  queryParam: localStorage.getItem('searchQuery')!,
-  isResult: true,
-  page: 0,
-  limit: 4,
-  totalPages: 0,
-  isItem: false,
-  isLoadingItem: false,
-  isItemResult: false,
-  ItemResult: {},
-};
+import Modal from '../components/UI/modal';
+import {
+  initialDetailedPageState,
+  initialSearchState,
+} from '../interface/interface';
 
 function SearchPage() {
-  const [searchState, setSearchState] =
-    useState<SearchState>(initialSearchState);
+  const [searchState, setSearchState] = useState(initialSearchState);
+
+  const [detailedPageState, setdetailedPageState] = useState(
+    initialDetailedPageState
+  );
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -61,6 +36,7 @@ function SearchPage() {
     if (!queryParams.get('page') || searchState.page === 0) {
       handleQueryChange('page', 1);
     }
+    queryParams.delete('recipe');
   }, []);
 
   const fetchData = async (data: string) => {
@@ -76,7 +52,6 @@ function SearchPage() {
         searchState.page
       );
       const responseData = response?.results;
-      console.log(responseData);
       if (responseData) {
         const totalItems = response.totalResults;
         const pages = getPagesCount(totalItems, searchState.limit);
@@ -151,7 +126,9 @@ function SearchPage() {
   };
 
   const changePage = (updetedPage: number) => {
+    queryParams.delete('recipe');
     handleQueryChange('page', updetedPage);
+
     let newPage = 0;
     switch (updetedPage) {
       case 1:
@@ -168,33 +145,52 @@ function SearchPage() {
       ...prevSearchState,
       page: newPage,
     }));
+    setdetailedPageState((prevSearchState) => ({
+      ...prevSearchState,
+      isItem: false,
+    }));
   };
 
   const handleItemClick = async (id: string) => {
     handleQueryChange('recipe', Number(id));
-    setSearchState((prevSearchState) => ({
+    setdetailedPageState((prevSearchState) => ({
       ...prevSearchState,
       isLoadingItem: true,
+      isItem: true,
       queryParam: id,
     }));
     setTimeout(async () => {
       const response = await getReciepFromApi(Number(id));
       if (response) {
-        setSearchState((prevSearchState) => ({
+        setdetailedPageState((prevSearchState) => ({
           ...prevSearchState,
-          isItemResult: response,
+          isItemResult: true,
+          ItemResult: response,
           isItem: true,
-          isLoading: false,
+          isLoadingItem: false,
+        }));
+      } else {
+        setdetailedPageState((prevSearchState) => ({
+          ...prevSearchState,
+          isItemResult: false,
         }));
       }
+      setdetailedPageState((prevSearchState) => ({
+        ...prevSearchState,
+        isLoadingItem: false,
+      }));
     });
   };
-  const handleGoBack = () => {
+
+  const handleClickGoBack = () => {
     queryParams.delete('recipe');
-    setSearchState((prevSearchState) => ({
-      ...prevSearchState,
-      isItem: false,
-    }));
+    navigate({ search: queryParams.toString() });
+    if (detailedPageState.isItem) {
+      setdetailedPageState((prevSearchState) => ({
+        ...prevSearchState,
+        isItem: false,
+      }));
+    }
   };
 
   return (
@@ -204,39 +200,54 @@ function SearchPage() {
         handleSearch={handleSearch}
         handleInputChange={handleInputChange}
       />
-      {searchState.isLoading ? (
-        <Loader queryParam={searchState.queryParam} />
-      ) : (
-        <Catalog
-          handleItemClick={handleItemClick}
-          results={searchState.results}
-          isResult={searchState.isResult}
-          queryParam={searchState.queryParam}
-          isError={searchState.isError}
-        />
-      )}
-      <Button
-        classes="top__section-button error"
-        title="Error"
-        onClick={addRenderError}
-      />
-      <Pagination
-        totalPages={searchState.totalPages}
-        changePage={changePage}
-        page={searchState.page}
-      />
-      <SelectComponent onChange={handleLimitChange} />
-      {searchState.isLoadingItem ? (
-        searchState.isItem ? (
-          <Loader queryParam="kh" />
-        ) : searchState.ItemResult ? (
-          <PageId handleGoBack={handleGoBack} result={searchState.ItemResult} />
-        ) : (
-          <NotFound />
-        )
-      ) : null}
+      <div className="main__section">
+        <div
+          className={`left-content ${
+            detailedPageState.isItem ? 'move-left' : ''
+          }`}
+        >
+          {detailedPageState.isItem ? (
+            <Modal onClose={() => handleClickGoBack()} />
+          ) : null}
+          {searchState.isLoading ? (
+            <Loader queryParam={searchState.queryParam} />
+          ) : (
+            <Catalog
+              handleItemClick={handleItemClick}
+              results={searchState.results}
+              isResult={searchState.isResult}
+              queryParam={searchState.queryParam}
+              isError={searchState.isError}
+            />
+          )}
+          <Button
+            classes="top__section-button error"
+            title="Error"
+            onClick={addRenderError}
+          />
+          <Pagination
+            totalPages={searchState.totalPages}
+            changePage={changePage}
+            page={searchState.page}
+          />
+          <SelectComponent onChange={handleLimitChange} />
+        </div>
+        <div className="right-content">
+          {detailedPageState.isItem ? (
+            detailedPageState.isLoadingItem ? (
+              <Loader queryParam="kh" />
+            ) : detailedPageState.ItemResult ? (
+              <PageId
+                handleGoBack={handleClickGoBack}
+                result={detailedPageState.ItemResult}
+              />
+            ) : (
+              <NotFound />
+            )
+          ) : null}
+        </div>
+      </div>
     </ErrorBoundary>
   );
 }
-
 export default SearchPage;

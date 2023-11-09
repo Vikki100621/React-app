@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import useTotalPagesArray from '../hooks/usePagination';
-import { PaginationProps } from '../interface/interface';
+
 import Button from './UI/button';
 import { incrementPage } from './utils/incrementPage';
 import { discrementPage } from './utils/discrementPage';
 import nextPage from '../assets/images/arrow__right.png';
 import prevPage from '../assets/images/arrow__left.png';
+import { PaginationProps } from '../interface/interface';
 
 type ButtonsState = {
   currentPage: number;
@@ -50,7 +51,6 @@ export function Pagination({ totalPages, changePage }: PaginationProps) {
     if (ButtonsState.currentPage >= 1) {
       const newPage = ButtonsState.currentPage - 1;
       const updatedFirstButtons = discrementPage(ButtonsState.visibleButtons);
-
       setButtonState((prevSearchState) => ({
         ...prevSearchState,
         currentPage: newPage,
@@ -106,6 +106,7 @@ export function Pagination({ totalPages, changePage }: PaginationProps) {
               classes={`pagination__button ${
                 item === ButtonsState.currentPage ? 'active' : ''
               }`}
+              key={item}
               onClick={() => {
                 changePage(item);
                 setButtonState((prevSearchState) => ({

@@ -73,3 +73,40 @@ export type PageIdProps = {
   result: DetailedPage;
   handleGoBack: () => void;
 };
+
+type SearchState = {
+  isError: boolean;
+  inputValue: string;
+  results: AppState[];
+  isLoading: boolean;
+  queryParam: string;
+  isResult: boolean;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
+
+type DetailedPageState = {
+  isItem: boolean;
+  isLoadingItem: boolean;
+  isItemResult: boolean;
+  ItemResult: DetailedPage;
+};
+export const initialSearchState: SearchState = {
+  isError: false,
+  inputValue: '',
+  results: [],
+  isLoading: false,
+  queryParam: localStorage.getItem('searchQuery')!,
+  isResult: true,
+  page: 0,
+  limit: 4,
+  totalPages: 0,
+};
+
+export const initialDetailedPageState: DetailedPageState = {
+  isItem: false,
+  isLoadingItem: false,
+  isItemResult: false,
+  ItemResult: {},
+};
