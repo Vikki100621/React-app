@@ -74,7 +74,7 @@ export type PageIdProps = {
   handleGoBack: () => void;
 };
 
-type SearchState = {
+export type SearchState = {
   isError: boolean;
   inputValue: string;
   results: AppState[];
@@ -92,6 +92,7 @@ type DetailedPageState = {
   isItemResult: boolean;
   ItemResult: DetailedPage;
 };
+
 export const initialSearchState: SearchState = {
   isError: false,
   inputValue: '',
@@ -110,3 +111,8 @@ export const initialDetailedPageState: DetailedPageState = {
   isItemResult: false,
   ItemResult: {},
 };
+
+export interface SearchContextProps {
+  searchState: SearchState;
+  setSearchState: React.Dispatch<React.SetStateAction<SearchState>>;
+}

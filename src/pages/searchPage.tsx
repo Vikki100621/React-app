@@ -1,24 +1,25 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Loader from '../components/UI/loader';
 import SearchBar from '../components/searchBar';
 import Catalog from '../components/catalog';
 import ErrorBoundary from '../components/errorBoundary';
 import Button from '../components/UI/button';
-import { getDataFromApi, getReciepFromApi } from '../API/api';
+// import { getDataFromApi, getReciepFromApi } from '../API/api';
 import SelectComponent from '../components/UI/select';
-import { getPagesCount } from '../components/utils/pageCount';
+// import { getPagesCount } from '../components/utils/pageCount';
 import { Pagination } from '../components/pagination';
 import PageId from './detailedPage';
 import { NotFound } from './notFoundPage';
 import Modal from '../components/UI/modal';
-import {
-  initialDetailedPageState,
-  initialSearchState,
-} from '../interface/interface';
+import { initialDetailedPageState } from '../interface/interface';
+import { SearchContext } from '../contexts/SearchContext';
+import { getReciepFromApi } from '../API/api';
 
 function SearchPage() {
-  const [searchState, setSearchState] = useState(initialSearchState);
+  const { searchState, setSearchState } = useContext(SearchContext);
+
+  const [inputValue, setInputValue] = useState('');
 
   const [detailedPageState, setdetailedPageState] = useState(
     initialDetailedPageState
@@ -39,80 +40,32 @@ function SearchPage() {
     queryParams.delete('recipe');
   }, []);
 
-  const fetchData = async (data: string) => {
-    setSearchState((prevSearchState) => ({
-      ...prevSearchState,
-      isLoading: true,
-      queryParam: data,
-    }));
-    setTimeout(async () => {
-      const response = await getDataFromApi(
-        data,
-        searchState.limit,
-        searchState.page
-      );
-      const responseData = response?.results;
-      if (responseData) {
-        const totalItems = response.totalResults;
-        const pages = getPagesCount(totalItems, searchState.limit);
-        setSearchState((prevSearchState) => ({
-          ...prevSearchState,
-          totalPages: pages,
-          isResult: true,
-          results: responseData,
-        }));
-      } else {
-        setSearchState((prevSearchState) => ({
-          ...prevSearchState,
-          isResult: false,
-        }));
-      }
-      setSearchState((prevSearchState) => ({
-        ...prevSearchState,
-        isLoading: false,
-        inputValue: '',
-      }));
-    }, 0);
+  const handleInputChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    const { value } = target;
+    setInputValue(value);
   };
-
-  useEffect(() => {
-    const searchQuery = localStorage.getItem('searchQuery');
-    fetchData(searchQuery || 'salt');
-  }, [searchState.limit, searchState.queryParam, searchState.page]);
 
   const handleSearch = () => {
     handleQueryChange('page', 1);
-    localStorage.setItem('searchQuery', searchState.inputValue);
+    localStorage.setItem('searchQuery', inputValue);
     if (searchState.inputValue === searchState.queryParam) {
       return;
     }
     if (searchState.inputValue === 'salt') {
       localStorage.setItem('searchQuery', 'salt');
     }
-    fetchData(searchState.inputValue || 'salt');
-  };
-
-  const handleInputChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
-    const { value } = target;
     setSearchState((prevSearchState) => ({
       ...prevSearchState,
-      inputValue: value,
-      page: 0,
+      queryParam: inputValue,
     }));
   };
 
   const addRenderError = () => {
-    setSearchState((prevSearchState) => ({
-      ...prevSearchState,
-      isError: true,
-    }));
+    searchState.isError = true;
   };
 
   const resetRenderError = () => {
-    setSearchState((prevSearchState) => ({
-      ...prevSearchState,
-      isError: false,
-    }));
+    searchState.isError = false;
   };
 
   const handleLimitChange = (newLimit: string) => {
@@ -120,8 +73,8 @@ function SearchPage() {
     const limitNum = parseInt(newLimit, 10);
     setSearchState((prevSearchState) => ({
       ...prevSearchState,
-      limit: limitNum,
       page: 0,
+      limit: limitNum,
     }));
   };
 
@@ -196,7 +149,7 @@ function SearchPage() {
   return (
     <ErrorBoundary catchError={resetRenderError}>
       <SearchBar
-        inputValue={searchState.inputValue}
+        inputValue={inputValue}
         handleSearch={handleSearch}
         handleInputChange={handleInputChange}
       />
