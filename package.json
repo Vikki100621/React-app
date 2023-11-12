@@ -10,6 +10,7 @@
     "format:fix": "prettier --write .",
     "preview": "vite preview",
     "test": "vitest && vitest --coverage",
+    "pre-push": "vites run",
     "prepare": "husky install"
   },
   "dependencies": {
