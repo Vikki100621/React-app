@@ -48,5 +48,10 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": "eslint --cache --fix"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run test && npx lint-staged"
+    }
   }
 }
