@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Loader from '../components/UI/loader';
@@ -111,7 +112,6 @@ function SearchPage() {
     }));
     setTimeout(async () => {
       const response = await getReciepFromApi(Number(id));
-      console.log(response);
       if (response) {
         setdetailedPageState((prevSearchState) => ({
           ...prevSearchState,

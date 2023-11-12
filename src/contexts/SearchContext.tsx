@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/jsx-no-constructed-context-values */
 import React, { ReactNode, createContext, useEffect, useState } from 'react';
 import { SearchState, initialSearchState } from '../interface/interface';
@@ -30,7 +31,6 @@ export function SearchProvider({ children }: { children: ReactNode }) {
       const responseData = response?.results;
       if (responseData) {
         const totalItems = response.totalResults;
-        console.log(totalItems);
         const pages = getPagesCount(totalItems, searchState.limit);
         setSearchState((prevSearchState) => ({
           ...prevSearchState,

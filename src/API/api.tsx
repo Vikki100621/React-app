@@ -18,8 +18,6 @@ export const getDataFromApi = async (
         },
       }
     );
-    const requestURL = response.config;
-    console.log('Request URL:', requestURL);
     return response.data;
   } catch (e) {
     return undefined;
@@ -28,10 +26,6 @@ export const getDataFromApi = async (
 
 export const getReciepFromApi = async (id: number) => {
   try {
-    const url = `https://api.spoonacular.com/recipes/${id}/information/?apiKey=5732271fa4144cc39aba70d0ac3a56ff`;
-
-    console.log('Request URL:', url);
-
     const response = await Axios.get(
       `https://api.spoonacular.com/recipes/${id}/information/?apiKey=5732271fa4144cc39aba70d0ac3a56ff`,
       {
