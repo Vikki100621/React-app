@@ -9,7 +9,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format:fix": "prettier --write .",
     "preview": "vite preview",
-    "test": "vitest && vitest --coverage",
+    "test": "vitest run --coverage",
     "coverge": "vitest --coverage",
     "pre-push": "vitest run",
     "prepare": "husky install"
