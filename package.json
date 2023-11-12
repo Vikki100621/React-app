@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "test": "vitest && vitest --coverage",
     "coverge": "vitest --coverage",
-    "pre-push": "test run",
+    "pre-push": "vitest run",
     "prepare": "husky install"
   },
   "dependencies": {
