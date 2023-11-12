@@ -119,6 +119,7 @@ export function Pagination({ totalPages, changePage }: PaginationProps) {
           ))}
 
           <Button
+            data-testid="next-page"
             classes="pagination__button next"
             title=""
             onClick={handleNextPage}

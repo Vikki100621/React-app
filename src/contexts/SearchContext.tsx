@@ -30,6 +30,7 @@ export function SearchProvider({ children }: { children: ReactNode }) {
       const responseData = response?.results;
       if (responseData) {
         const totalItems = response.totalResults;
+        console.log(totalItems);
         const pages = getPagesCount(totalItems, searchState.limit);
         setSearchState((prevSearchState) => ({
           ...prevSearchState,

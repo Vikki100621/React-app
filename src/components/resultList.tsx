@@ -6,7 +6,12 @@ function ResultsList(props: ResultsListProps) {
   return (
     <ul>
       {results.map((item: AppState) => (
-        <li id={item.id} key={item.id} onClick={() => handleItemClick(item.id)}>
+        <li
+          data-testid="card"
+          id={item.id}
+          key={item.id}
+          onClick={() => handleItemClick(item.id)}
+        >
           <h3>{item.title}</h3>
           <img src={item.image} alt={item.title} />
         </li>

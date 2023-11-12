@@ -12,13 +12,15 @@ function Catalog({
   if (isError) {
     throw new Error('Test error to check ErrorBoundary');
   }
-
   return !isResult ? (
     <ErrorBox errorText="Failed to fetch" />
   ) : results.length ? (
     <div className="bottom__section">
       <h3>
-        Recipes with <span className="query-param">{queryParam}</span>
+        Recipes with
+        <span data-testid="stored-keyword" className="query-param">
+          {queryParam}
+        </span>
       </h3>
       <ResultsList handleItemClick={handleItemClick} results={results} />
     </div>

@@ -5,7 +5,7 @@ import { SearchProvider } from './contexts/SearchContext';
 function App() {
   return (
     <SearchProvider>
-      <RouterProvider router={router} />;
+      <RouterProvider router={router} />
     </SearchProvider>
   );
 }

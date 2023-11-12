@@ -5,8 +5,12 @@ function PageId(props: PageIdProps) {
   const { handleGoBack, result } = props;
   return (
     <>
-      <div className="detailed-page special">
-        <button type="submit" onClick={() => handleGoBack()}>
+      <div data-testid="detailedPage" className="detailed-page special">
+        <button
+          data-testid="close"
+          type="submit"
+          onClick={() => handleGoBack()}
+        >
           ❌
         </button>
         <h2>{result.title}</h2>

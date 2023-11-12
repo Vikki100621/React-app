@@ -5,9 +5,7 @@ import SearchBar from '../components/searchBar';
 import Catalog from '../components/catalog';
 import ErrorBoundary from '../components/errorBoundary';
 import Button from '../components/UI/button';
-// import { getDataFromApi, getReciepFromApi } from '../API/api';
 import SelectComponent from '../components/UI/select';
-// import { getPagesCount } from '../components/utils/pageCount';
 import { Pagination } from '../components/pagination';
 import PageId from './detailedPage';
 import { NotFound } from './notFoundPage';
@@ -20,7 +18,6 @@ function SearchPage() {
   const { searchState, setSearchState } = useContext(SearchContext);
 
   const [inputValue, setInputValue] = useState('');
-
   const [detailedPageState, setdetailedPageState] = useState(
     initialDetailedPageState
   );
@@ -114,6 +111,7 @@ function SearchPage() {
     }));
     setTimeout(async () => {
       const response = await getReciepFromApi(Number(id));
+      console.log(response);
       if (response) {
         setdetailedPageState((prevSearchState) => ({
           ...prevSearchState,
@@ -145,7 +143,6 @@ function SearchPage() {
       }));
     }
   };
-
   return (
     <ErrorBoundary catchError={resetRenderError}>
       <SearchBar
@@ -188,7 +185,7 @@ function SearchPage() {
         <div className="right-content">
           {detailedPageState.isItem ? (
             detailedPageState.isLoadingItem ? (
-              <Loader queryParam="kh" />
+              <Loader queryParam="details" />
             ) : detailedPageState.ItemResult ? (
               <PageId
                 handleGoBack={handleClickGoBack}

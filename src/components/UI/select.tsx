@@ -14,7 +14,7 @@ function SelectComponent({ onChange }: SelectComponentProps) {
   return (
     <div>
       <label htmlFor="select">Select the quantity</label>
-      <select id="select" onChange={handleChange}>
+      <select data-testid="select" id="select" onChange={handleChange}>
         <option value="4">4</option>
         <option value="6">6</option>
         <option value="8">8</option>
