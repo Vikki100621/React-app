@@ -1,5 +1,7 @@
 import { http, HttpResponse } from 'msw';
 
+const api = '5732271fa4144cc39aba70d0ac3a56ff';
+
 export const mockResults = [
   { id: '1', title: 'Recipe 1', image: 'image1.jpg' },
   { id: '2', title: 'Recipe 2', image: 'image2.jpg' },
@@ -40,19 +42,19 @@ export const mockApiResponse = {
 
 export const handlers = [
   http.get(
-    'https://api.spoonacular.com/recipes/1/information/?apiKey=5732271fa4144cc39aba70d0ac3a56ff',
+    `https://api.spoonacular.com/recipes/1/information/?apiKey=${api}`,
     async () => {
       return HttpResponse.json(mockApiResponse);
     }
   ),
   http.get(
-    'https://api.spoonacular.com/recipes/complexSearch?apiKey=5732271fa4144cc39aba70d0ac3a56ff&query=salt&number=4&offset=0',
+    `https://api.spoonacular.com/recipes/complexSearch?apiKey=${api}&query=salt&number=4&offset=0`,
     async () => {
       return HttpResponse.json(mockResultsApi);
     }
   ),
   http.get(
-    'https://api.spoonacular.com/recipes/complexSearch?apiKey=5732271fa4144cc39aba70d0ac3a56ff&query=salt&number=10&offset=0',
+    `https://api.spoonacular.com/recipes/complexSearch?apiKey=${api}&query=salt&number=10&offset=0`,
     async () => {
       return HttpResponse.json(mockResultsApiMoreLength);
     }
