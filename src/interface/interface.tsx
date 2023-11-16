@@ -7,7 +7,6 @@ export type AppState = {
 };
 
 export type ResultsListProps = {
-  results: AppState[];
   handleItemClick: (id: string) => void;
 };
 
@@ -62,10 +61,6 @@ export type DetailedPage = {
 };
 
 export type CatalogProps = {
-  isResult: boolean;
-  isError: boolean;
-  queryParam: string;
-  results: AppState[];
   handleItemClick: (id: string) => void;
 };
 
@@ -83,7 +78,7 @@ export type SearchState = {
   isResult: boolean;
   page: number;
   limit: number;
-  totalPages: number;
+  totalResults: number;
 };
 
 type DetailedPageState = {
@@ -98,11 +93,11 @@ export const initialSearchState: SearchState = {
   inputValue: '',
   results: [],
   isLoading: false,
-  queryParam: localStorage.getItem('searchQuery')!,
+  queryParam: localStorage.getItem('searchQuery')! || 'fish',
   isResult: true,
   page: 0,
   limit: 4,
-  totalPages: 0,
+  totalResults: 0,
 };
 
 export const initialDetailedPageState: DetailedPageState = {

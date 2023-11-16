@@ -1,5 +1,6 @@
+/* eslint-disable prefer-const */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { ChangeEvent, useContext, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Loader from '../components/UI/loader';
 import SearchBar from '../components/searchBar';
@@ -12,16 +13,25 @@ import PageId from './detailedPage';
 import { NotFound } from './notFoundPage';
 import Modal from '../components/UI/modal';
 import { initialDetailedPageState } from '../interface/interface';
-import { SearchContext } from '../contexts/SearchContext';
+// import { useAppSelector } from '../hooks/redux';
+// import { SearchContext } from '../contexts/SearchContext';
+// import { updateInputValue } from '../store/reducers/SearchSlice';
 import { getReciepFromApi } from '../API/api';
+import {
+  searchChangeLimit,
+  searchChangePage,
+  searchSetError,
+} from '../store/reducers/SearchSlice';
+import { useAppSelector } from '../hooks/redux';
 
 function SearchPage() {
-  const { searchState, setSearchState } = useContext(SearchContext);
+  const { page, queryParam } = useAppSelector((state) => state.searchReducer);
 
   const [inputValue, setInputValue] = useState('');
   const [detailedPageState, setdetailedPageState] = useState(
     initialDetailedPageState
   );
+
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -32,7 +42,7 @@ function SearchPage() {
   };
 
   useEffect(() => {
-    if (!queryParams.get('page') || searchState.page === 0) {
+    if (!queryParams.get('page') || page === 0) {
       handleQueryChange('page', 1);
     }
     queryParams.delete('recipe');
@@ -46,60 +56,29 @@ function SearchPage() {
   const handleSearch = () => {
     handleQueryChange('page', 1);
     localStorage.setItem('searchQuery', inputValue);
-    if (searchState.inputValue === searchState.queryParam) {
+    setInputValue(inputValue);
+
+    if (inputValue === queryParam) {
       return;
     }
-    if (searchState.inputValue === 'salt') {
+    if (inputValue === 'salt') {
       localStorage.setItem('searchQuery', 'salt');
     }
-    setSearchState((prevSearchState) => ({
-      ...prevSearchState,
-      queryParam: inputValue,
-    }));
   };
 
   const addRenderError = () => {
-    searchState.isError = true;
+    searchSetError(true);
   };
 
   const resetRenderError = () => {
-    searchState.isError = false;
+    searchSetError(false);
   };
 
   const handleLimitChange = (newLimit: string) => {
     handleQueryChange('page', 1);
     const limitNum = parseInt(newLimit, 10);
-    setSearchState((prevSearchState) => ({
-      ...prevSearchState,
-      page: 0,
-      limit: limitNum,
-    }));
-  };
-
-  const changePage = (updetedPage: number) => {
-    queryParams.delete('recipe');
-    handleQueryChange('page', updetedPage);
-
-    let newPage = 0;
-    switch (updetedPage) {
-      case 1:
-        newPage = 0;
-        break;
-      case 2:
-        newPage = searchState.limit;
-        break;
-      default:
-        newPage = (updetedPage - 1) * searchState.limit;
-        break;
-    }
-    setSearchState((prevSearchState) => ({
-      ...prevSearchState,
-      page: newPage,
-    }));
-    setdetailedPageState((prevSearchState) => ({
-      ...prevSearchState,
-      isItem: false,
-    }));
+    searchChangePage(0);
+    searchChangeLimit(limitNum);
   };
 
   const handleItemClick = async (id: string) => {
@@ -143,6 +122,7 @@ function SearchPage() {
       }));
     }
   };
+
   return (
     <ErrorBoundary catchError={resetRenderError}>
       <SearchBar
@@ -159,27 +139,15 @@ function SearchPage() {
           {detailedPageState.isItem ? (
             <Modal onClose={() => handleClickGoBack()} />
           ) : null}
-          {searchState.isLoading ? (
-            <Loader queryParam={searchState.queryParam} />
-          ) : (
-            <Catalog
-              handleItemClick={handleItemClick}
-              results={searchState.results}
-              isResult={searchState.isResult}
-              queryParam={searchState.queryParam}
-              isError={searchState.isError}
-            />
-          )}
+
+          <Catalog handleItemClick={handleItemClick} />
+
           <Button
             classes="top__section-button error"
             title="Error"
             onClick={addRenderError}
           />
-          <Pagination
-            totalPages={searchState.totalPages}
-            changePage={changePage}
-            page={searchState.page}
-          />
+          <Pagination />
           <SelectComponent onChange={handleLimitChange} />
         </div>
         <div className="right-content">
@@ -200,4 +168,5 @@ function SearchPage() {
     </ErrorBoundary>
   );
 }
+
 export default SearchPage;
