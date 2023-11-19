@@ -10,18 +10,8 @@ export type ResultsListProps = {
   handleItemClick: (id: string) => void;
 };
 
-export type BottomSectionState = {
-  inputValue: string;
-  results: AppState[];
-  isLoading: boolean;
-  queryParam: string;
-  searchQuery: string | null;
-  isResult: boolean;
-};
-
 export type InputProps = {
   type: string;
-  value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -34,6 +24,7 @@ export type ButtonProps = {
   };
   disabled?: boolean;
   children?: React.ReactNode;
+  testDataId?: string;
 };
 
 export type LoaderProps = {
@@ -44,12 +35,6 @@ export type SearchBarProps = {
   inputValue: string;
   handleSearch: () => void;
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-};
-
-export type PaginationProps = {
-  totalPages: number;
-  page: number;
-  changePage: (page: number) => void;
 };
 
 export type DetailedPage = {
@@ -65,14 +50,12 @@ export type CatalogProps = {
 };
 
 export type PageIdProps = {
-  result: DetailedPage;
   handleGoBack: () => void;
 };
 
 export type SearchState = {
   isError: boolean;
   inputValue: string;
-  results: AppState[];
   isLoading: boolean;
   queryParam: string;
   isResult: boolean;
@@ -91,7 +74,6 @@ type DetailedPageState = {
 export const initialSearchState: SearchState = {
   isError: false,
   inputValue: '',
-  results: [],
   isLoading: false,
   queryParam: localStorage.getItem('searchQuery')! || 'fish',
   isResult: true,

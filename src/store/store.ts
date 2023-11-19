@@ -1,9 +1,11 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { recipeAPI } from '../API/api';
 import searchReducer from './reducers/SearchSlice';
+import detailedPagereducer from './reducers/DetailedPageSlice';
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   searchReducer,
+  detailedPagereducer,
   [recipeAPI.reducerPath]: recipeAPI.reducer,
 });
 export const setupStore = () => {

@@ -4,7 +4,11 @@ import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { AppState, CatalogProps } from '../interface/interface';
 import Loader from './UI/loader';
 import ErrorBox from './error';
-import { searchSetTotalPages } from '../store/reducers/SearchSlice';
+import {
+  searchRequestFailed,
+  searchSetLoading,
+  searchSetTotalResults,
+} from '../store/reducers/SearchSlice';
 
 function Catalog({ handleItemClick }: CatalogProps) {
   const { page, queryParam, limit } = useAppSelector(
@@ -24,10 +28,15 @@ function Catalog({ handleItemClick }: CatalogProps) {
 
   useEffect(() => {
     if (resultsData) {
-      dispatch(searchSetTotalPages(resultsData.totalResults));
-      console.log(resultsData);
+      dispatch(searchSetTotalResults(resultsData.totalResults));
     }
-  }, [resultsData, dispatch]);
+    if (isLoading) {
+      dispatch(searchSetLoading(true));
+    }
+    if (!isSuccess) {
+      dispatch(searchRequestFailed());
+    }
+  }, [isLoading, isSuccess, resultsData]);
 
   if (isError) {
     throw new Error('Test error to check ErrorBoundary');
@@ -37,17 +46,17 @@ function Catalog({ handleItemClick }: CatalogProps) {
     return <Loader queryParam={queryParam} />;
   }
 
-  return !isSuccess ? (
-    <ErrorBox errorText="Failed to fetch" />
-  ) : resultsData.results.length ? (
+  if (!isSuccess) {
+    return <ErrorBox errorText="Failed to fetch" />;
+  }
+  return resultsData.results.length ? (
     <div className="bottom__section">
       <h3>
-        Recipes with
+        Recipes with{' '}
         <span data-testid="stored-keyword" className="query-param">
           {queryParam}
         </span>
       </h3>
-
       <ul>
         {resultsData.results.map((item: AppState) => (
           <li
@@ -63,7 +72,7 @@ function Catalog({ handleItemClick }: CatalogProps) {
       </ul>
     </div>
   ) : (
-    <ErrorBox errorText="No results" />
+    <ErrorBox errorText="No result with the requested parameters" />
   );
 }
 

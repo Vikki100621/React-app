@@ -1,20 +1,28 @@
-import { MemoryRouter } from 'react-router-dom';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { SearchProvider } from '../contexts/SearchContext';
-import SearchPage from '../pages/searchPage';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  screen,
+  waitFor,
+} from '@testing-library/react';
+import { renderPage } from '../mocks/testUtils/render';
 
-test('Pagination updates URL query parameter when page changes', async () => {
-  render(
-    <MemoryRouter>
-      <SearchProvider>
-        <SearchPage />
-      </SearchProvider>
-    </MemoryRouter>
-  );
+describe('pagination', () => {
+  afterEach(() => {
+    cleanup();
+  });
+  test('Pagination updates URL query parameter when page changes', async () => {
+    await renderPage();
 
-  waitFor(async () => {
-    const nextPageButton = screen.getByTestId('next-page');
-    fireEvent.click(nextPageButton);
+    await waitFor(async () => {
+      const nextPageButton = screen.getByTestId('next-page');
+      await act(() => fireEvent.click(nextPageButton));
+    });
     expect(window.location.search).toEqual('?page=2');
+    await waitFor(async () => {
+      const nextPageButton = screen.getByTestId('next-page');
+      await act(() => fireEvent.click(nextPageButton));
+    });
+    expect(window.location.search).toEqual('?page=3');
   });
 });

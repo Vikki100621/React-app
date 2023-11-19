@@ -1,72 +1,60 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { mockResultsApi } from '../mocks/handlers';
-import { SearchProvider } from '../contexts/SearchContext';
-import SearchPage from '../pages/searchPage';
 import { server } from '../mocks/browser';
+import { renderPage } from '../mocks/testUtils/render';
 
-test('renders relevant data for each card', async () => {
-  render(
-    <MemoryRouter>
-      <SearchProvider>
-        <SearchPage />
-      </SearchProvider>
-    </MemoryRouter>
-  );
-
-  await waitFor(() => {
-    const items = screen.getAllByTestId('card');
-    items.forEach((item, index) => {
-      const { title, image } = mockResultsApi.results[index];
-      expect(item).toBeInTheDocument();
-      expect(item).toHaveTextContent(title);
-      expect(item.querySelector('img')).toHaveAttribute('src', image);
-    });
+describe('Tests for the Cardcomponent', () => {
+  afterEach(() => {
+    cleanup();
   });
-});
 
-test('opens a detailed card component', async () => {
-  render(
-    <MemoryRouter>
-      <SearchProvider>
-        <SearchPage />
-      </SearchProvider>
-    </MemoryRouter>
-  );
+  test('renders relevant data for each card', async () => {
+    await renderPage();
 
-  await waitFor(() => {
-    const items = screen.getAllByTestId('card');
-    items.forEach((item) => {
-      expect(item).toBeInTheDocument();
-      fireEvent.click(item);
-      waitFor(() => {
-        const detailedPage = screen.getByTestId('detailedPage');
-        expect(detailedPage).toBeInTheDocument();
+    await waitFor(() => {
+      const items = screen.getAllByTestId('card');
+      items.forEach((item, index) => {
+        const { title, image } = mockResultsApi.results[index];
+        expect(item).toBeInTheDocument();
+        expect(item).toHaveTextContent(title);
+        expect(item.querySelector('img')).toHaveAttribute('src', image);
       });
     });
   });
-});
 
-test('triggers an additional API', async () => {
-  render(
-    <MemoryRouter>
-      <SearchProvider>
-        <SearchPage />
-      </SearchProvider>
-    </MemoryRouter>
-  );
+  test('opens a detailed card component', async () => {
+    await renderPage();
 
-  await waitFor(() => {
-    const items = screen.getAllByTestId('card');
-    items.forEach((item) => {
-      expect(item).toBeInTheDocument();
-      fireEvent.click(items[0]);
-      waitFor(() => {
-        const detailedPage = screen.getByTestId('detailedPage');
-        expect(detailedPage).toBeInTheDocument();
-        const apiRequests = server.listHandlers();
-        expect(apiRequests).toHaveLength(1);
+    await waitFor(() => {
+      const items = screen.getAllByTestId('card');
+      items.forEach(async (item) => {
+        expect(item).toBeInTheDocument();
+        await act(() => fireEvent.click(items[0]));
       });
     });
+    await waitFor(() => {
+      const detailedPage = screen.getByTestId('detailedPage');
+      expect(detailedPage).toBeInTheDocument();
+    });
+  });
+
+  test('triggers an additional API', async () => {
+    await renderPage();
+    await waitFor(() => {
+      const items = screen.getAllByTestId('card');
+      items.forEach(async (item) => {
+        expect(item).toBeInTheDocument();
+        await act(() => fireEvent.click(items[0]));
+      });
+    });
+
+    const apiRequests = server.listHandlers();
+    expect(apiRequests).toHaveLength(2);
   });
 });

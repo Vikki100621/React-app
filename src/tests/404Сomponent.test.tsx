@@ -1,36 +1,28 @@
-import { MemoryRouter } from 'react-router-dom';
-import { render, screen } from '@testing-library/react';
-import { SearchProvider } from '../contexts/SearchContext';
-import SearchPage from '../pages/searchPage';
+import { cleanup, screen } from '@testing-library/react';
 
-test('displays the 404 page when navigating to an invalid route', () => {
-  const initialEntries = ['/'];
+import { renderPageWithBrokenRout } from '../mocks/testUtils/render';
 
-  test('404 page is displayed when navigating to an invalid route', () => {
-    render(
-      <MemoryRouter initialEntries={initialEntries}>
-        <SearchProvider>
-          <SearchPage />
-        </SearchProvider>
-      </MemoryRouter>
-    );
-    const notFoundElement = screen.getByTestId('notFound');
-    expect(notFoundElement).toBeInTheDocument();
+describe('404 component', () => {
+  afterEach(() => {
+    cleanup();
   });
-});
+  test('displays the 404 page when navigating to an invalid route', () => {
+    const initialEntries = '/';
 
-test('displays the 404 page when navigating to an invalid route', () => {
-  const initialEntries = ['/some'];
+    test('404 page is displayed when navigating to an invalid route', () => {
+      renderPageWithBrokenRout(initialEntries);
+      const notFoundElement = screen.getByTestId('notFound');
+      expect(notFoundElement).toBeInTheDocument();
+    });
+  });
 
-  test('404 page is displayed when navigating to an invalid route', () => {
-    render(
-      <MemoryRouter initialEntries={initialEntries}>
-        <SearchProvider>
-          <SearchPage />
-        </SearchProvider>
-      </MemoryRouter>
-    );
-    const notFoundElement = screen.getByTestId('notFound');
-    expect(notFoundElement).toBeInTheDocument();
+  test('displays the 404 page when navigating to an invalid route', () => {
+    const initialEntries = '/some';
+
+    test('404 page is displayed when navigating to an invalid route', () => {
+      renderPageWithBrokenRout(initialEntries);
+      const notFoundElement = screen.getByTestId('notFound');
+      expect(notFoundElement).toBeInTheDocument();
+    });
   });
 });

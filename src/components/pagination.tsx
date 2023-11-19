@@ -4,8 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import useTotalPagesArray from '../hooks/usePagination';
 
 import Button from './UI/button';
-// import { incrementPage } from './utils/incrementPage';
-// import { discrementPage } from './utils/discrementPage';
 import nextPage from '../assets/images/arrow__right.png';
 import prevPage from '../assets/images/arrow__left.png';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
@@ -39,7 +37,7 @@ export function Pagination() {
       visibleButtons: [1, 2, 3],
       totalPages: pages,
     });
-  }, [totalResults]);
+  }, [totalResults, limit]);
 
   const updateVisibleButtons = (newPage: number) => {
     const startPage = Math.max(1, newPage - 1);
@@ -133,8 +131,8 @@ export function Pagination() {
             />
           ))}
           <Button
-            data-testid="next-page"
             classes="pagination__button next"
+            testDataId="next-page"
             title=""
             onClick={handleNextPage}
           >
@@ -153,163 +151,3 @@ export function Pagination() {
     </div>
   );
 }
-// type ButtonsState = {
-//   currentPage: number;
-//   visibleButtons: number[];
-// };
-
-// export function Pagination() {
-//   const { totalPages, limit } = useAppSelector((state) => state.searchReducer);
-//   const pagesArray = useTotalPagesArray(totalPages);
-//   const dispatch = useAppDispatch();
-//   const initialButtonsState =
-//     pagesArray.length === 2
-//       ? {
-//           currentPage: 1,
-//           visibleButtons: [1, 2],
-//         }
-//       : {
-//           currentPage: 1,
-//           visibleButtons: [1, 2, 3],
-//         };
-
-//   const [ButtonsState, setButtonState] =
-//     useState<ButtonsState>(initialButtonsState);
-
-//   useEffect(() => {
-//     setButtonState(initialButtonsState);
-//   }, [totalPages]);
-
-//   const navigate = useNavigate();
-//   const location = useLocation();
-//   const queryParams = new URLSearchParams(location.search);
-
-//   const handleQueryChange = (param: string, value: number) => {
-//     queryParams.set(`${param}`, value.toString());
-//     navigate({ search: queryParams.toString() });
-//   };
-
-//   const changePage = (updetedPage: number) => {
-//     queryParams.delete('recipe');
-//     handleQueryChange('page', updetedPage);
-//     let newPage = 0;
-//     switch (updetedPage) {
-//       case 1:
-//         newPage = 0;
-//         break;
-//       case 2:
-//         newPage = limit;
-//         break;
-//       default:
-//         newPage = (updetedPage - 1) * limit;
-//         break;
-//     }
-//     dispatch(searchChangePage(newPage));
-//   };
-
-//   const handleNextPage = () => {
-//     if (ButtonsState.currentPage < totalPages) {
-//       const newPage = ButtonsState.currentPage + 1;
-//       if (newPage <= totalPages) {
-//         const updatedFirstButtons = incrementPage(ButtonsState.visibleButtons);
-//         setButtonState(() => ({
-//           currentPage: newPage,
-//           visibleButtons: updatedFirstButtons,
-//         }));
-//       }
-//       changePage(newPage);
-//     }
-//   };
-
-//   const handlePreviousPage = () => {
-//     if (ButtonsState.currentPage >= 1) {
-//       const newPage = ButtonsState.currentPage - 1;
-//       const updatedFirstButtons = discrementPage(ButtonsState.visibleButtons);
-//       setButtonState((prevSearchState) => ({
-//         ...prevSearchState,
-//         currentPage: newPage,
-//         visibleButtons: updatedFirstButtons,
-//       }));
-//       changePage(newPage);
-//     }
-//   };
-
-//   const handleFirstPage = () => {
-//     setButtonState(() => ({
-//       currentPage: 1,
-//       visibleButtons: [1, 2, 3],
-//     }));
-//     changePage(1);
-//   };
-
-//   const handleLastPage = () => {
-//     const lastVisiblePage = pagesArray[pagesArray.length - 1];
-//     setButtonState((prevSearchState) => ({
-//       ...prevSearchState,
-//       currentPage: lastVisiblePage,
-//       visibleButtons: [
-//         lastVisiblePage - 2,
-//         lastVisiblePage - 1,
-//         lastVisiblePage,
-//       ],
-//     }));
-//     changePage(lastVisiblePage - 2);
-//   };
-
-//   return (
-//     <div className="buttons-block">
-//       {pagesArray.length > 1 ? (
-//         <>
-//           <Button
-//             classes="pagination__button first"
-//             title=""
-//             onClick={handleFirstPage}
-//           >
-//             <img src={prevPage} alt="First Page" />
-//             <img src={prevPage} alt="First Page" />
-//           </Button>
-//           <Button
-//             classes="pagination__button previous"
-//             title=""
-//             onClick={handlePreviousPage}
-//           >
-//             <img src={prevPage} alt="Previous Page" />
-//           </Button>
-//           {ButtonsState.visibleButtons.map((item) => (
-//             <Button
-//               classes={`pagination__button ${
-//                 item === ButtonsState.currentPage ? 'active' : ''
-//               }`}
-//               key={item}
-//               onClick={() => {
-//                 changePage(item);
-//                 setButtonState((prevSearchState) => ({
-//                   ...prevSearchState,
-//                   currentPage: item,
-//                 }));
-//               }}
-//               title={item.toString()}
-//             />
-//           ))}
-
-//           <Button
-//             data-testid="next-page"
-//             classes="pagination__button next"
-//             title=""
-//             onClick={handleNextPage}
-//           >
-//             <img src={nextPage} alt="Next Page" />
-//           </Button>
-//           <Button
-//             classes="pagination__button last"
-//             title=""
-//             onClick={handleLastPage}
-//           >
-//             <img src={nextPage} alt="Last Page" />
-//             <img src={nextPage} alt="Last Page" />
-//           </Button>
-//         </>
-//       ) : null}
-//     </div>
-//   );
-// }
