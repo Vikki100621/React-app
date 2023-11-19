@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from 'react';
 import { useFetchAllRecipesQuery } from '../API/api';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';

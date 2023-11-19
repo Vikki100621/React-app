@@ -8,7 +8,7 @@ import {
 import 'vitest-localstorage-mock';
 import { renderPage } from '../mocks/testUtils/render';
 
-const localStorageMock = (function () {
+const localStorageMock = (function createLocalStorageMock() {
   const store: Record<string, string> = {};
 
   return {
@@ -21,6 +21,7 @@ const localStorageMock = (function () {
     },
   };
 })();
+
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 const setLocalStorage = (id: string, data: string) => {
   window.localStorage.setItem(id, data);
