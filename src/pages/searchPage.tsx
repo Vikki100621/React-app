@@ -31,13 +31,6 @@ function SearchPage() {
     navigate({ search: queryParams.toString() });
   };
 
-  // useEffect(() => {
-  //   if (!queryParams.get('page') || page === 0) {
-  //     handleQueryChange('page', 1);
-  //   }
-  //   queryParams.delete('recipe');
-  // }, []);
-
   useEffect(() => {
     const pageUrl = queryParams.get('page');
     if (pageUrl) {
