@@ -7,7 +7,7 @@ $font-garamond: 'Cormorant Garamond', serif;
 
 .top__section {
   width: 100%;
-  background-color: #5f74c9;
+  background-color: #472932;
   position: fixed;
   top: 0;
   margin: 0 auto;
@@ -107,12 +107,12 @@ $font-garamond: 'Cormorant Garamond', serif;
     padding: 40px;
     gap: 20px;
     width: 700px;
-    background-color: rgb(133 168 195 / 34%);
+    background-color: rgb(148 103 103 / 34%)
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 
     li {
-      background-color: #aadeff;
+      background-color: #472932;
       display: flex;
       gap: 50px;
       justify-content: center;

@@ -1,91 +1,109 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useTotalPagesArray from '../hooks/usePagination';
 
 import Button from './UI/button';
-import { incrementPage } from './utils/incrementPage';
-import { discrementPage } from './utils/discrementPage';
 import nextPage from '../assets/images/arrow__right.png';
 import prevPage from '../assets/images/arrow__left.png';
-import { PaginationProps } from '../interface/interface';
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import { searchChangePage } from '../store/reducers/SearchSlice';
+import { getPages } from './utils/getPages';
 
 type ButtonsState = {
   currentPage: number;
   visibleButtons: number[];
+  totalPages: number;
 };
 
-export function Pagination({ totalPages, changePage }: PaginationProps) {
-  const pagesArray = useTotalPagesArray(totalPages);
-  const initialButtonsState =
-    pagesArray.length === 2
-      ? {
-          currentPage: 1,
-          visibleButtons: [1, 2],
-        }
-      : {
-          currentPage: 1,
-          visibleButtons: [1, 2, 3],
-        };
+export function Pagination() {
+  const { totalResults, limit, page } = useAppSelector(
+    (state) => state.searchReducer
+  );
 
-  const [ButtonsState, setButtonState] =
-    useState<ButtonsState>(initialButtonsState);
+  const pages = getPages(totalResults, limit);
+  const pagesArray = useTotalPagesArray(pages);
+
+  const dispatch = useAppDispatch();
+  const [ButtonsState, setButtonState] = useState<ButtonsState>({
+    currentPage: 1,
+    visibleButtons: [1, 2, 3],
+    totalPages: pages,
+  });
 
   useEffect(() => {
-    setButtonState(initialButtonsState);
-  }, [totalPages]);
+    setButtonState({
+      currentPage: 1,
+      visibleButtons: [1, 2, 3],
+      totalPages: pages,
+    });
+  }, [totalResults, limit]);
+
+  const updateVisibleButtons = (newPage: number) => {
+    const startPage = Math.max(1, newPage - 1);
+    const endPage = Math.min(pages, startPage + 2);
+    let newButtons = Array.from(
+      { length: endPage - startPage + 1 },
+      (_, i) => startPage + i
+    );
+    if (newPage === pagesArray[pagesArray.length - 1]) {
+      newButtons = pagesArray.slice(-3);
+    }
+    setButtonState({
+      currentPage: newPage,
+      visibleButtons: newButtons,
+      totalPages: pages,
+    });
+  };
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+
+  const handleQueryChange = (param: string, value: number) => {
+    queryParams.set(`${param}`, value.toString());
+    navigate({ search: queryParams.toString() });
+  };
+
+  useEffect(() => {
+    if (!queryParams.get('page') || page === 0) {
+      handleQueryChange('page', 1);
+    }
+    queryParams.delete('recipe');
+  }, []);
+
+  const changePage = (newPage: number) => {
+    queryParams.delete('recipe');
+    queryParams.set('page', newPage.toString());
+    navigate({ search: queryParams.toString() });
+    dispatch(searchChangePage((newPage - 1) * limit));
+    updateVisibleButtons(newPage);
+  };
 
   const handleNextPage = () => {
-    if (ButtonsState.currentPage < totalPages) {
+    if (ButtonsState.currentPage < pages) {
       const newPage = ButtonsState.currentPage + 1;
-      if (newPage <= totalPages) {
-        const updatedFirstButtons = incrementPage(ButtonsState.visibleButtons);
-        changePage(newPage);
-        setButtonState(() => ({
-          currentPage: newPage,
-          visibleButtons: updatedFirstButtons,
-        }));
-      }
+      changePage(newPage);
     }
   };
 
   const handlePreviousPage = () => {
-    if (ButtonsState.currentPage >= 1) {
+    if (ButtonsState.currentPage > 1) {
       const newPage = ButtonsState.currentPage - 1;
-      const updatedFirstButtons = discrementPage(ButtonsState.visibleButtons);
-      setButtonState((prevSearchState) => ({
-        ...prevSearchState,
-        currentPage: newPage,
-        visibleButtons: updatedFirstButtons,
-      }));
       changePage(newPage);
     }
   };
 
   const handleFirstPage = () => {
-    setButtonState(() => ({
-      currentPage: 1,
-      visibleButtons: [1, 2, 3],
-    }));
     changePage(1);
   };
 
   const handleLastPage = () => {
-    const lastVisiblePage = pagesArray[pagesArray.length - 1];
-    setButtonState((prevSearchState) => ({
-      ...prevSearchState,
-      currentPage: lastVisiblePage,
-      visibleButtons: [
-        lastVisiblePage - 2,
-        lastVisiblePage - 1,
-        lastVisiblePage,
-      ],
-    }));
-    changePage(lastVisiblePage);
+    changePage(pagesArray[pagesArray.length - 2]);
   };
 
   return (
     <div className="buttons-block">
-      {pagesArray.length > 1 ? (
+      {pagesArray.length > 1 && (
         <>
           <Button
             classes="pagination__button first"
@@ -108,20 +126,13 @@ export function Pagination({ totalPages, changePage }: PaginationProps) {
                 item === ButtonsState.currentPage ? 'active' : ''
               }`}
               key={item}
-              onClick={() => {
-                changePage(item);
-                setButtonState((prevSearchState) => ({
-                  ...prevSearchState,
-                  currentPage: item,
-                }));
-              }}
+              onClick={() => changePage(item)}
               title={item.toString()}
             />
           ))}
-
           <Button
-            data-testid="next-page"
             classes="pagination__button next"
+            testDataId="next-page"
             title=""
             onClick={handleNextPage}
           >
@@ -136,7 +147,7 @@ export function Pagination({ totalPages, changePage }: PaginationProps) {
             <img src={nextPage} alt="Last Page" />
           </Button>
         </>
-      ) : null}
+      )}
     </div>
   );
 }

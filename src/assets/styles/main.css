@@ -1,9 +1,5 @@
 @import './reset.css';
 @import './searchPage/searchPage.css';
-body {
-  background: linear-gradient(to top, #55efcb 0%, #5bcaff 100%);
-}
-
 #root {
   margin: 0 auto;
   display: flex;
@@ -36,6 +32,21 @@ body {
 }
 #root .bottom__section {
   transition: margin-left 0.5s;
+}
+
+#root::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("../images/background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.7;
+  z-index: -1;
 }
 
 @keyframes slideIn {

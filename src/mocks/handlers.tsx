@@ -1,15 +1,12 @@
 import { http, HttpResponse } from 'msw';
 
-const api = '5732271fa4144cc39aba70d0ac3a56ff';
+type ApiResponse = {
+  totalResults: number;
+  results: { id: string; title: string; image: string }[];
+};
 
-export const mockResults = [
-  { id: '1', title: 'Recipe 1', image: 'image1.jpg' },
-  { id: '2', title: 'Recipe 2', image: 'image2.jpg' },
-  { id: '3', title: 'Recipe 3', image: 'image3.jpg' },
-  { id: '4', title: 'Recipe 4', image: 'image4.jpg' },
-];
-
-export const mockResultsApi = {
+export const mockResultsApi: ApiResponse = {
+  totalResults: 34,
   results: [
     { id: '1', title: 'Recipe 1', image: 'image1.jpg' },
     { id: '2', title: 'Recipe 2', image: 'image2.jpg' },
@@ -18,7 +15,13 @@ export const mockResultsApi = {
   ],
 };
 
-export const mockResultsApiMoreLength = {
+export const mockResultsApiEmptyArr = {
+  totalResults: 0,
+  results: [],
+};
+
+export const mockResultsApiMoreLength: ApiResponse = {
+  totalResults: 34,
   results: [
     { id: '1', title: 'Recipe 1', image: 'image1.jpg' },
     { id: '2', title: 'Recipe 2', image: 'image2.jpg' },
@@ -41,22 +44,27 @@ export const mockApiResponse = {
 };
 
 export const handlers = [
+  http.get(`https://api.spoonacular.com/recipes/1/information`, async () => {
+    return HttpResponse.json(mockApiResponse);
+  }),
   http.get(
-    `https://api.spoonacular.com/recipes/1/information/?apiKey=${api}`,
-    async () => {
-      return HttpResponse.json(mockApiResponse);
-    }
-  ),
-  http.get(
-    `https://api.spoonacular.com/recipes/complexSearch?apiKey=${api}&query=salt&number=4&offset=0`,
-    async () => {
-      return HttpResponse.json(mockResultsApi);
-    }
-  ),
-  http.get(
-    `https://api.spoonacular.com/recipes/complexSearch?apiKey=${api}&query=salt&number=10&offset=0`,
-    async () => {
-      return HttpResponse.json(mockResultsApiMoreLength);
+    'https://api.spoonacular.com/recipes/complexSearch',
+    ({ request }) => {
+      const url = new URL(request.url);
+      if (
+        url.searchParams.get('query') === 'svds' &&
+        url.searchParams.get('number') === '3' &&
+        url.searchParams.get('page') === '2'
+      ) {
+        return HttpResponse.json(mockResultsApiEmptyArr);
+      }
+      if (url.searchParams.get('number') === '4') {
+        return HttpResponse.json(mockResultsApi);
+      }
+      if (url.searchParams.get('number') === '10') {
+        return HttpResponse.json(mockResultsApiMoreLength);
+      }
+      return HttpResponse.json({});
     }
   ),
 ];

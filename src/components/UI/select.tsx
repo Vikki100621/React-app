@@ -1,14 +1,28 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../hooks/redux';
+import {
+  searchChangeLimit,
+  searchChangePage,
+} from '../../store/reducers/SearchSlice';
 
-interface SelectComponentProps {
-  onChange: (num: string) => void;
-}
+function SelectComponent() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
 
-function SelectComponent({ onChange }: SelectComponentProps) {
+  const handleQueryChange = (param: string, value: number) => {
+    queryParams.set(`${param}`, value.toString());
+    navigate({ search: queryParams.toString() });
+  };
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
-    onChange(selectedValue);
+    handleQueryChange('page', 1);
+    const limitNum = parseInt(selectedValue, 10);
+    dispatch(searchChangePage(0));
+    dispatch(searchChangeLimit(limitNum));
   };
 
   return (
