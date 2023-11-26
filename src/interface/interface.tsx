@@ -63,6 +63,7 @@ export type CatalogProps = {
 };
 
 export type PageIdProps = {
+  id: string;
   handleGoBack: () => void;
 };
 

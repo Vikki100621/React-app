@@ -17,7 +17,7 @@ function SearchPage() {
 export const getServerSideProps = wrapper.getServerSideProps(
   (store: AppStore) => async (context) => {
     const getPage = context.params?.page;
-    const query = context.query.search;
+    const queryParam = context.query.search;
     const limit = context.query.limit;
     const hasDetails = getPage?.includes('details');
     let page;
@@ -28,7 +28,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
     } else {
       page = (Number(getPage) - 1) * Number(limit);
     }
-    await store.dispatch(fetchAllRecipes.initiate({ query, limit, page }));
+    await store.dispatch(
+      fetchAllRecipes.initiate({ query: queryParam, limit, page })
+    );
 
     if (id) {
       await store.dispatch(fetchRecipe.initiate(id));

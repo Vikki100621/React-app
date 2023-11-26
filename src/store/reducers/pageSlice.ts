@@ -1,19 +1,20 @@
 /* eslint-disable no-param-reassign */
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+
+interface PageState {
+  isError: boolean;
+}
 
 const pageSlice = createSlice({
   name: 'detailedPage',
-  initialState: { isItem: false, isError: false },
+  initialState: { isError: false } as PageState,
   reducers: {
-    setIsItem: (state, action) => {
-      state.isItem = action.payload;
-    },
-    setError: (state, action) => {
+    setError: (state, action: PayloadAction<boolean>) => {
       state.isError = action.payload;
     },
   },
 });
 
-export const { setIsItem, setError } = pageSlice.actions;
+export const { setError } = pageSlice.actions;
 
 export default pageSlice.reducer;

@@ -10,7 +10,12 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'plugin:prettier/recommended',
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs', 'next.config.mjs', 'vite.config.ts'],
+  ignorePatterns: [
+    'dist',
+    '.eslintrc.cjs',
+    'next.config.mjs',
+    'vite.config.ts',
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: 'tsconfig.json',
@@ -19,20 +24,20 @@ module.exports = {
   },
   plugins: ['react-refresh', 'prettier'],
   rules: {
-    "react-refresh/only-export-components": "off",
-    "react-hooks/exhaustive-deps": "off",
-    "react/jsx-props-no-spreading": "off",
-    "react/button-has-type": "off",
-    "import/extensions": [
-      "error",
-      "ignorePackages",
+    'react-refresh/only-export-components': 'off',
+    'react-hooks/exhaustive-deps': 'off',
+    'react/jsx-props-no-spreading': 'off',
+    'react/button-has-type': 'off',
+    'import/extensions': [
+      'error',
+      'ignorePackages',
       {
-        "js": "never",
-        "jsx": "never",
-        "ts": "never",
-        "tsx": "never",
-        "json": "never"
-      }
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+        json: 'never',
+      },
     ],
     'react-refresh/only-export-components': [
       'warn',
@@ -56,8 +61,8 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/prefer-stateless-function': 'off',
     'no-nested-ternary': 'off',
-    "jsx-a11y/click-events-have-key-events": "off",
-    "jsx-a11y/no-noninteractive-element-interactions": "off",
-    "jsx-a11y/no-static-element-interactions": "off"
+    'jsx-a11y/click-events-have-key-events': 'off',
+    'jsx-a11y/no-noninteractive-element-interactions': 'off',
+    'jsx-a11y/no-static-element-interactions': 'off',
   },
 };

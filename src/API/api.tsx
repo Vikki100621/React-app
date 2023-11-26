@@ -15,11 +15,11 @@ export const recipeAPI = createApi({
   },
   endpoints: (builder) => ({
     fetchAllRecipes: builder.query({
-      query: ({ queryParam, limit, page }) => ({
+      query: ({ query, limit, page }) => ({
         url: '/complexSearch',
         params: {
           apiKey: API_KEY,
-          query: queryParam,
+          query,
           number: limit,
           offset: page,
         },

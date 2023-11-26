@@ -85,15 +85,15 @@ export function Pagination({ totalResults }: TotalResults) {
             title=""
             onClick={handleFirstPage}
           >
-            <Image src={prevPage} alt="First Page" />
-            <Image src={prevPage} alt="First Page" />
+            <Image src={prevPage} alt="First Page" width={40} />
+            <Image src={prevPage} alt="First Page" width={40} />
           </Button>
           <Button
             classes="pagination__button previous"
             title=""
             onClick={handlePreviousPage}
           >
-            <Image src={prevPage} alt="Previous Page" />
+            <Image src={prevPage} alt="Previous Page" width={40} />
           </Button>
           {ButtonsState.visibleButtons.map((item) => (
             <Button
@@ -111,15 +111,15 @@ export function Pagination({ totalResults }: TotalResults) {
             title=""
             onClick={handleNextPage}
           >
-            <Image src={nextPage} alt="Next Page" />
+            <Image src={nextPage} alt="Next Page" width={40} />
           </Button>
           <Button
             classes="pagination__button last"
             title=""
             onClick={handleLastPage}
           >
-            <Image src={nextPage} alt="Last Page" />
-            <Image src={nextPage} alt="Last Page" />
+            <Image src={nextPage} alt="Last Page" width={40} />
+            <Image src={nextPage} alt="Last Page" width={40} />
           </Button>
         </>
       )}

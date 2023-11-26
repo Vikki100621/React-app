@@ -16,6 +16,7 @@ function Catalog({ results }: { results: AppState[] }) {
   }
   const handleItemClick = (itemId: string) => {
     const newUrl = `/page/${newPage}/details/${itemId}?search=${search}&limit=${limit}`;
+
     router.push(newUrl);
   };
 
