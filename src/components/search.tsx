@@ -1,5 +1,7 @@
-import { DetailedPage, ResultsData } from 'interface/interface';
+// import { DetailedPage, ResultsData } from 'interface/interface';
 import { useRouter } from 'next/router';
+import { useFetchAllRecipesQuery } from 'API/api';
+import { AppState } from 'interface/interface';
 import SearchBar from './searchBar';
 import Catalog from './catalog';
 import ErrorBoundary from './errorBoundary';
@@ -9,22 +11,25 @@ import { Pagination } from './pagination';
 import Modal from './UI/modal';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { setError, setIsItem } from '../store/reducers/pageSlice';
-import PageId from './detailedPage';
 import ErrorBox from './error';
+import PageId from './detailedPage';
 
-interface SearchProps {
-  apiResult: ResultsData;
-  apiResultDetails: DetailedPage | null;
-}
-
-function Search({ apiResult, apiResultDetails }: SearchProps) {
+function Search() {
   const dispatch = useAppDispatch();
   const { isError } = useAppSelector((state) => state.pageSlice);
   const router = useRouter();
-  console.log(router.query.page);
-  const details = router.query.page;
-  const detail = details?.includes('details');
-
+  const { page, search, limit } = router.query;
+  const detail = page?.includes('details');
+  const pageNum = page?.length ? page[0] : '';
+  const pageQuery = (Number(pageNum) - 1) * Number(limit);
+  const { data } = useFetchAllRecipesQuery({
+    query: search,
+    limit,
+    page: pageQuery,
+  });
+  console.log(data);
+  const res = data?.results as AppState[];
+  const num = data?.totalResults as number;
   const addRenderError = () => {
     dispatch(setError(true));
   };
@@ -58,16 +63,11 @@ function Search({ apiResult, apiResultDetails }: SearchProps) {
           <div className="main__section">
             <div className={`left-content ${detail ? 'move-left' : ''}`}>
               {detail ? <Modal onClose={() => handleClickGoBack()} /> : null}
-              <Catalog resultsData={apiResult.results} />
-              <Pagination totalResults={apiResult.totalResults} />
+              <Catalog results={res} />
+              <Pagination totalResults={num} />
               <SelectComponent />
             </div>
-            {detail ? (
-              <PageId
-                data={apiResultDetails}
-                handleGoBack={handleClickGoBack}
-              />
-            ) : null}
+            {detail ? <PageId handleGoBack={handleClickGoBack} /> : null}
           </div>
         </>
       )}

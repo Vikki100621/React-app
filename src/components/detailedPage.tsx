@@ -1,10 +1,15 @@
+import { useRouter } from 'next/router';
 import ErrorBox from './error';
 
 import { PageIdProps } from '../interface/interface';
+import { useFetchRecipeQuery } from '../API/api';
 
 function PageId(props: PageIdProps) {
-  const { handleGoBack, data } = props;
-
+  const { handleGoBack } = props;
+  const router = useRouter();
+  const { page } = router.query;
+  const id = page?.length ? page[2] : '';
+  const { data } = useFetchRecipeQuery(id);
   return (
     <div className="right-content">
       {data ? (

@@ -46,10 +46,15 @@ export type DetailedPage = {
   instructions?: string;
 };
 export type ResultsData = {
-  totalResults: number;
-  results: AppState[];
+  totalResults?: number;
+  results?: AppState[];
 };
 
+export type Responce = {
+  data: {
+    resultsData: ResultsData;
+  };
+};
 export type TotalResults = {
   totalResults: number;
 };
@@ -59,7 +64,6 @@ export type CatalogProps = {
 
 export type PageIdProps = {
   handleGoBack: () => void;
-  data: DetailedPage | null;
 };
 
 export type SearchState = {

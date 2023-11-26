@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 import { useAppSelector } from '../hooks/redux';
-import { AppState, CatalogProps } from '../interface/interface';
+import { AppState } from '../interface/interface';
 import ErrorBox from './error';
 
-function Catalog({ resultsData }: CatalogProps) {
+function Catalog({ results }: { results: AppState[] }) {
   const { isError } = useAppSelector((state) => state.pageSlice);
   const router = useRouter();
 
@@ -22,7 +22,7 @@ function Catalog({ resultsData }: CatalogProps) {
   if (isError) {
     throw new Error('Test error to check ErrorBoundary');
   }
-  return resultsData.length ? (
+  return results?.length ? (
     <div className="bottom__section">
       <h3>
         Recipes with{' '}
@@ -31,7 +31,7 @@ function Catalog({ resultsData }: CatalogProps) {
         </span>
       </h3>
       <ul>
-        {resultsData.map((item: AppState) => (
+        {results.map((item: AppState) => (
           <li
             data-testid="card"
             id={item.id}
