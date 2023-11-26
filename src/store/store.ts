@@ -1,16 +1,14 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
+import { createWrapper } from 'next-redux-wrapper';
 import { recipeAPI } from '../API/api';
-import searchReducer from './reducers/SearchSlice';
-import detailedPagereducer from './reducers/DetailedPageSlice';
+import pageSlice from './reducers/pageSlice';
 
-export const rootReducer = combineReducers({
-  searchReducer,
-  detailedPagereducer,
-  [recipeAPI.reducerPath]: recipeAPI.reducer,
-});
 export const setupStore = () => {
   return configureStore({
-    reducer: rootReducer,
+    reducer: {
+      pageSlice,
+      [recipeAPI.reducerPath]: recipeAPI.reducer,
+    },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(recipeAPI.middleware),
   });
@@ -18,6 +16,8 @@ export const setupStore = () => {
 
 export default setupStore;
 
-export type RootState = ReturnType<typeof rootReducer>;
 export type AppStore = ReturnType<typeof setupStore>;
+export type RootState = ReturnType<AppStore['getState']>;
 export type AppDispatch = AppStore['dispatch'];
+
+export const wrapper = createWrapper<AppStore>(setupStore, { debug: true });

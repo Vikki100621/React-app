@@ -1,11 +1,11 @@
 import { ButtonProps } from '../../interface/interface';
 
 function Button(props: ButtonProps) {
-  const { onClick, title, classes, children, testDataId } = props;
+  const { type, onClick, title, classes, children, testDataId } = props;
   const classNames = classes.split(' ').join(' ');
   return (
     <button
-      type="button"
+      type={type}
       className={classNames}
       onClick={onClick}
       data-testid={testDataId}

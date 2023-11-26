@@ -1,28 +1,15 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../../hooks/redux';
-import {
-  searchChangeLimit,
-  searchChangePage,
-} from '../../store/reducers/SearchSlice';
+import { useRouter } from 'next/router';
 
 function SelectComponent() {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-
-  const handleQueryChange = (param: string, value: number) => {
-    queryParams.set(`${param}`, value.toString());
-    navigate({ search: queryParams.toString() });
-  };
+  const router = useRouter();
+  const { search } = router.query;
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
-    handleQueryChange('page', 1);
     const limitNum = parseInt(selectedValue, 10);
-    dispatch(searchChangePage(0));
-    dispatch(searchChangeLimit(limitNum));
+    const newUrl = `/page/1?search=${search}&limit=${limitNum}`;
+    router.push(newUrl);
   };
 
   return (
@@ -37,4 +24,5 @@ function SelectComponent() {
     </div>
   );
 }
+
 export default SelectComponent;

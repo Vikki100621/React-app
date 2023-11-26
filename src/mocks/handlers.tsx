@@ -37,12 +37,11 @@ export const mockResultsApiMoreLength: ApiResponse = {
 };
 
 export const mockApiResponse = {
-  id: '1',
+  id: 1,
   title: 'Mock Recipe',
   readyInMinutes: 10,
   image: 'mock-image-url.jpg',
 };
-
 export const handlers = [
   http.get(`https://api.spoonacular.com/recipes/1/information`, async () => {
     return HttpResponse.json(mockApiResponse);
@@ -51,13 +50,6 @@ export const handlers = [
     'https://api.spoonacular.com/recipes/complexSearch',
     ({ request }) => {
       const url = new URL(request.url);
-      if (
-        url.searchParams.get('query') === 'svds' &&
-        url.searchParams.get('number') === '3' &&
-        url.searchParams.get('page') === '2'
-      ) {
-        return HttpResponse.json(mockResultsApiEmptyArr);
-      }
       if (url.searchParams.get('number') === '4') {
         return HttpResponse.json(mockResultsApi);
       }
