@@ -1,8 +1,3 @@
-@font-face {
-  font-family: 'Our Grown';
-  src: url('../../fonts/sonic_filled.ttf');
-}
-
 $font-garamond: 'Cormorant Garamond', serif;
 
 .top__section {
@@ -107,7 +102,7 @@ $font-garamond: 'Cormorant Garamond', serif;
     padding: 40px;
     gap: 20px;
     width: 700px;
-    background-color: rgb(148 103 103 / 34%)
+    background-color: rgb(148 103 103 / 34%);
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 

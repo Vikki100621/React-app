@@ -1,14 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import Image from 'next/image';
+import { TotalResults } from 'interface/interface';
+import { useRouter } from 'next/router';
 import useTotalPagesArray from '../hooks/usePagination';
-
-import Button from './UI/button';
 import nextPage from '../assets/images/arrow__right.png';
 import prevPage from '../assets/images/arrow__left.png';
-import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { searchChangePage } from '../store/reducers/SearchSlice';
 import { getPages } from './utils/getPages';
+import Button from './UI/button';
 
 type ButtonsState = {
   currentPage: number;
@@ -16,15 +15,12 @@ type ButtonsState = {
   totalPages: number;
 };
 
-export function Pagination() {
-  const { totalResults, limit, page } = useAppSelector(
-    (state) => state.searchReducer
-  );
-
-  const pages = getPages(totalResults, limit);
+export function Pagination({ totalResults }: TotalResults) {
+  const router = useRouter();
+  const { search, limit, page } = router.query;
+  const pages = getPages(totalResults, Number(limit));
   const pagesArray = useTotalPagesArray(pages);
 
-  const dispatch = useAppDispatch();
   const [ButtonsState, setButtonState] = useState<ButtonsState>({
     currentPage: 1,
     visibleButtons: [1, 2, 3],
@@ -32,51 +28,30 @@ export function Pagination() {
   });
 
   useEffect(() => {
-    setButtonState({
-      currentPage: 1,
-      visibleButtons: [1, 2, 3],
-      totalPages: pages,
-    });
-  }, [totalResults, limit]);
-
-  const updateVisibleButtons = (newPage: number) => {
-    const startPage = Math.max(1, newPage - 1);
-    const endPage = Math.min(pages, startPage + 2);
-    let newButtons = Array.from(
-      { length: endPage - startPage + 1 },
-      (_, i) => startPage + i
-    );
-    if (newPage === pagesArray[pagesArray.length - 1]) {
-      newButtons = pagesArray.slice(-3);
+    if (Number(page) === pagesArray[pagesArray.length - 1]) {
+      setButtonState({
+        currentPage: Number(page),
+        visibleButtons: [Number(page) - 2, Number(page) - 1, Number(page)],
+        totalPages: pages,
+      });
+    } else if (Number(page) === 1) {
+      setButtonState({
+        currentPage: 1,
+        visibleButtons: [1, 2, 3],
+        totalPages: pages,
+      });
+    } else if (Number(page) >= 2) {
+      setButtonState({
+        currentPage: Number(page),
+        visibleButtons: [Number(page) - 1, Number(page), Number(page) + 1],
+        totalPages: pages,
+      });
     }
-    setButtonState({
-      currentPage: newPage,
-      visibleButtons: newButtons,
-      totalPages: pages,
-    });
-  };
-  const navigate = useNavigate();
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-
-  const handleQueryChange = (param: string, value: number) => {
-    queryParams.set(`${param}`, value.toString());
-    navigate({ search: queryParams.toString() });
-  };
-
-  useEffect(() => {
-    if (!queryParams.get('page') || page === 0) {
-      handleQueryChange('page', 1);
-    }
-    queryParams.delete('recipe');
-  }, []);
+  }, [totalResults, limit, page]);
 
   const changePage = (newPage: number) => {
-    queryParams.delete('recipe');
-    queryParams.set('page', newPage.toString());
-    navigate({ search: queryParams.toString() });
-    dispatch(searchChangePage((newPage - 1) * limit));
-    updateVisibleButtons(newPage);
+    const newUrl = `/page/${newPage}?search=${search}&limit=${limit}`;
+    router.push(newUrl);
   };
 
   const handleNextPage = () => {
@@ -110,15 +85,15 @@ export function Pagination() {
             title=""
             onClick={handleFirstPage}
           >
-            <img src={prevPage} alt="First Page" />
-            <img src={prevPage} alt="First Page" />
+            <Image src={prevPage} alt="First Page" width={40} />
+            <Image src={prevPage} alt="First Page" width={40} />
           </Button>
           <Button
             classes="pagination__button previous"
             title=""
             onClick={handlePreviousPage}
           >
-            <img src={prevPage} alt="Previous Page" />
+            <Image src={prevPage} alt="Previous Page" width={40} />
           </Button>
           {ButtonsState.visibleButtons.map((item) => (
             <Button
@@ -136,15 +111,15 @@ export function Pagination() {
             title=""
             onClick={handleNextPage}
           >
-            <img src={nextPage} alt="Next Page" />
+            <Image src={nextPage} alt="Next Page" width={40} />
           </Button>
           <Button
             classes="pagination__button last"
             title=""
             onClick={handleLastPage}
           >
-            <img src={nextPage} alt="Last Page" />
-            <img src={nextPage} alt="Last Page" />
+            <Image src={nextPage} alt="Last Page" width={40} />
+            <Image src={nextPage} alt="Last Page" width={40} />
           </Button>
         </>
       )}

@@ -1,46 +1,28 @@
-import {
-  act,
-  cleanup,
-  fireEvent,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { screen, waitFor, act, fireEvent } from '@testing-library/react';
+import { assert } from 'vitest';
+import { HttpResponse, http } from 'msw';
 import { mockResultsApi } from '../mocks/handlers';
-import { server } from '../mocks/browser';
 import { renderPage } from '../mocks/testUtils/render';
+import { server } from '../mocks/browser';
 
 describe('Tests for the Cardcomponent', () => {
-  afterEach(() => {
-    cleanup();
-  });
-
   test('renders relevant data for each card', async () => {
+    server.use(
+      http.get(
+        `https://api.spoonacular.com/recipes/complexSearch`,
+        async () => {
+          return HttpResponse.json(mockResultsApi);
+        }
+      )
+    );
     await renderPage();
-
     await waitFor(() => {
       const items = screen.getAllByTestId('card');
       items.forEach((item, index) => {
-        const { title, image } = mockResultsApi.results[index];
-        expect(item).toBeInTheDocument();
-        expect(item).toHaveTextContent(title);
-        expect(item.querySelector('img')).toHaveAttribute('src', image);
+        const { title } = mockResultsApi.results[index];
+        assert.exists(item);
+        assert.include(item.textContent, title);
       });
-    });
-  });
-
-  test('opens a detailed card component', async () => {
-    await renderPage();
-
-    await waitFor(() => {
-      const items = screen.getAllByTestId('card');
-      items.forEach(async (item) => {
-        expect(item).toBeInTheDocument();
-        await act(() => fireEvent.click(items[0]));
-      });
-    });
-    await waitFor(() => {
-      const detailedPage = screen.getByTestId('detailedPage');
-      expect(detailedPage).toBeInTheDocument();
     });
   });
 
@@ -49,8 +31,8 @@ describe('Tests for the Cardcomponent', () => {
     await waitFor(() => {
       const items = screen.getAllByTestId('card');
       items.forEach(async (item) => {
-        expect(item).toBeInTheDocument();
-        await act(() => fireEvent.click(items[0]));
+        assert.exists(item);
+        await act(() => fireEvent.click(item));
       });
     });
 

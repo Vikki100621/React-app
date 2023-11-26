@@ -25,6 +25,7 @@ export type ButtonProps = {
   disabled?: boolean;
   children?: React.ReactNode;
   testDataId?: string;
+  type?: 'button' | 'submit' | 'reset' | undefined;
 };
 
 export type LoaderProps = {
@@ -44,12 +45,25 @@ export type DetailedPage = {
   readyInMinutes?: number;
   instructions?: string;
 };
+export type ResultsData = {
+  totalResults?: number;
+  results?: AppState[];
+};
 
+export type Responce = {
+  data: {
+    resultsData: ResultsData;
+  };
+};
+export type TotalResults = {
+  totalResults: number;
+};
 export type CatalogProps = {
-  handleItemClick: (id: string) => void;
+  resultsData: AppState[];
 };
 
 export type PageIdProps = {
+  id: string;
   handleGoBack: () => void;
 };
 
@@ -64,30 +78,16 @@ export type SearchState = {
   totalResults: number;
 };
 
-type DetailedPageState = {
-  isItem: boolean;
-  isLoadingItem: boolean;
-  isItemResult: boolean;
-  ItemResult: DetailedPage;
-};
-
-export const initialSearchState: SearchState = {
-  isError: false,
-  inputValue: '',
-  isLoading: false,
-  queryParam: localStorage.getItem('searchQuery')! || 'fish',
-  isResult: true,
-  page: 0,
-  limit: 4,
-  totalResults: 0,
-};
-
-export const initialDetailedPageState: DetailedPageState = {
-  isItem: false,
-  isLoadingItem: false,
-  isItemResult: false,
-  ItemResult: {},
-};
+// export const initialSearchState: SearchState = {
+//   isError: false,
+//   inputValue: '',
+//   isLoading: false,
+//   queryParam: 'fish',
+//   isResult: true,
+//   page: 0,
+//   limit: 4,
+//   totalResults: 0,
+// };
 
 export interface SearchContextProps {
   searchState: SearchState;

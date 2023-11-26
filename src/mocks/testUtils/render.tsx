@@ -1,9 +1,12 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { Provider } from 'react-redux';
 import { act, render } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
+import NotFound from '../../pages/404';
 import { setupStore } from '../../store/store';
-import App from '../../App';
-import SearchPage from '../../pages/searchPage';
+import SearchPage from '../../pages/page/[[...page]]';
+import { createMockRouter } from './createMockRouter';
+import { Pagination } from '../../components/pagination';
 
 const store = setupStore();
 
@@ -11,20 +14,29 @@ export const renderPage = async (): Promise<void> => {
   await act(async () => {
     render(
       <Provider store={store}>
-        <App />
+        <SearchPage />
       </Provider>
     );
   });
 };
-
-export const renderPageWithBrokenRout = async (rout: string): Promise<void> => {
+export const renderPagination = async (): Promise<void> => {
   await act(async () => {
     render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={[`${rout}`]}>
-          <SearchPage />
-        </MemoryRouter>
-      </Provider>
+      <RouterContext.Provider value={createMockRouter({ route: '/page/1?' })}>
+        <Provider store={store}>
+          <Pagination totalResults={30} />
+        </Provider>
+      </RouterContext.Provider>
+    );
+  });
+};
+
+export const renderPageWithBrokenRout = async (): Promise<void> => {
+  await act(async () => {
+    render(
+      <RouterContext.Provider value={createMockRouter({ route: '/hfc' })}>
+        <NotFound />
+      </RouterContext.Provider>
     );
   });
 };

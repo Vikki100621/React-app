@@ -1,65 +1,38 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from 'react';
-import { useFetchAllRecipesQuery } from '../API/api';
-import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { AppState, CatalogProps } from '../interface/interface';
-import Loader from './UI/loader';
+import { useRouter } from 'next/router';
+import { useAppSelector } from '../hooks/redux';
+import { AppState } from '../interface/interface';
 import ErrorBox from './error';
-import {
-  searchRequestFailed,
-  searchSetLoading,
-  searchSetTotalResults,
-} from '../store/reducers/SearchSlice';
 
-function Catalog({ handleItemClick }: CatalogProps) {
-  const { page, queryParam, limit } = useAppSelector(
-    (state) => state.searchReducer
-  );
-  const dispatch = useAppDispatch();
-  const {
-    data: resultsData,
-    isError,
-    isSuccess,
-    isLoading,
-  } = useFetchAllRecipesQuery({
-    query: queryParam,
-    limit,
-    page,
-  });
+function Catalog({ results }: { results: AppState[] }) {
+  const { isError } = useAppSelector((state) => state.pageSlice);
+  const router = useRouter();
 
-  useEffect(() => {
-    if (resultsData) {
-      dispatch(searchSetTotalResults(resultsData.totalResults));
-    }
-    if (isLoading) {
-      dispatch(searchSetLoading(true));
-    }
-    if (!isSuccess) {
-      dispatch(searchRequestFailed());
-    }
-  }, [isLoading, isSuccess, resultsData]);
+  const { search, page, limit } = router.query;
+
+  let newPage: string;
+
+  if (page?.length) {
+    newPage = page[0];
+  }
+  const handleItemClick = (itemId: string) => {
+    const newUrl = `/page/${newPage}/details/${itemId}?search=${search}&limit=${limit}`;
+
+    router.push(newUrl);
+  };
 
   if (isError) {
     throw new Error('Test error to check ErrorBoundary');
   }
-
-  if (isLoading) {
-    return <Loader queryParam={queryParam} />;
-  }
-
-  if (!isSuccess) {
-    return <ErrorBox errorText="Failed to fetch" />;
-  }
-  return resultsData.results.length ? (
+  return results?.length ? (
     <div className="bottom__section">
       <h3>
         Recipes with{' '}
         <span data-testid="stored-keyword" className="query-param">
-          {queryParam}
+          {search}
         </span>
       </h3>
       <ul>
-        {resultsData.results.map((item: AppState) => (
+        {results.map((item: AppState) => (
           <li
             data-testid="card"
             id={item.id}
