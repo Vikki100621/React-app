@@ -1,0 +1,35 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  row-gap: 30px;
+  margin: 0 auto;
+  padding: 30px;
+  .input-box {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+  input,
+  select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+
+    &:focus {
+      border: 3px #007bff solid;
+      box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+    }
+  }
+  .error {
+    color: red;
+    font-weight: 700;
+    font-size: 18px;
+  }
+  .input-file {
+    border: none;
+  }
+}
